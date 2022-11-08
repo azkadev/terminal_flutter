@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_brace_in_string_interps, non_constant_identifier_names
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -232,10 +234,47 @@ class _HomeState extends State<Home> {
     return null;
   }
 
+  Map<String, String>? getEnv() {
+    String? get_app_path = getAppDir();
+    if (get_app_path == null) {
+      return null;
+    }
+    return {
+      "SHELL": "${get_app_path}/files/usr/bin/bash",
+      "COLORTERM": "truecolor",
+      "HISTCONTROL": "ignoreboth",
+      "PREFIX": "${get_app_path}/files/usr",
+      "TERMUX_IS_DEBUGGABLE_BUILD": "0",
+      "TERMUX_MAIN_PACKAGE_FORMAT": "debian",
+      "PWD": "${get_app_path}/files/usr",
+      "TERMUX_VERSION": "0.118.0",
+      "EXTERNAL_STORAGE": "/sdcard",
+      "LD_PRELOAD": "${get_app_path}/files/usr/lib/libtermux-exec.so",
+      "HOME": "${get_app_path}/files/home",
+      "LANG": "en_US.UTF-8",
+      "TERMUX_APK_RELEASE": "F_DROID",
+      "DEX2OATBOOTCLASSPATH": "/apex/com.android.art/javalib/core-oj.jar:/apex/com.android.art/javalib/core-libart.jar:/apex/com.android.art/javalib/core-icu4j.jar:/apex/com.android.art/javalib/okhttp.jar:/apex/com.android.art/javalib/bouncycastle.jar:/apex/com.android.art/javalib/apache-xml.jar:/system/framework/framework.jar:/system/framework/ext.jar:/system/framework/telephony-common.jar:/system/framework/voip-common.jar:/system/framework/ims-common.jar:/system/framework/framework-atb-backward-compatibility.jar:/system/framework/qcom.fmradio.jar:/system/framework/QPerformance.jar:/system/framework/UxPerformance.jar:/system/framework/telephony-ext.jar:/system/framework/WfdCommon.jar",
+      "TMPDIR": "${get_app_path}/files/usr/tmp",
+      "ANDROID_DATA": "/data",
+      "TERM": "xterm-256color",
+      "ANDROID_I18N_ROOT": "/apex/com.android.i18n",
+      "SHLVL": "1",
+      "ANDROID_ROOT": "/system",
+      "BOOTCLASSPATH": "/apex/com.android.art/javalib/core-oj.jar:/apex/com.android.art/javalib/core-libart.jar:/apex/com.android.art/javalib/core-icu4j.jar:/apex/com.android.art/javalib/okhttp.jar:/apex/com.android.art/javalib/bouncycastle.jar:/apex/com.android.art/javalib/apache-xml.jar:/system/framework/framework.jar:/system/framework/ext.jar:/system/framework/telephony-common.jar:/system/framework/voip-common.jar:/system/framework/ims-common.jar:/system/framework/framework-atb-backward-compatibility.jar:/system/framework/qcom.fmradio.jar:/system/framework/QPerformance.jar:/system/framework/UxPerformance.jar:/system/framework/telephony-ext.jar:/system/framework/WfdCommon.jar:/apex/com.android.conscrypt/javalib/conscrypt.jar:/apex/com.android.media/javalib/updatable-media.jar:/apex/com.android.mediaprovider/javalib/framework-mediaprovider.jar:/apex/com.android.os.statsd/javalib/framework-statsd.jar:/apex/com.android.permission/javalib/framework-permission.jar:/apex/com.android.sdkext/javalib/framework-sdkextensions.jar:/apex/com.android.wifi/javalib/framework-wifi.jar:/apex/com.android.tethering/javalib/framework-tethering.jar",
+      "ANDROID_TZDATA_ROOT": "/apex/com.android.tzdata",
+      "TERMUX_APP_PID": "13262",
+      "PATH": "${get_app_path}/files/home/.pub-cache/bin:${get_app_path}/files/usr/bin",
+      "ANDROID_ART_ROOT": "/apex/com.android.art",
+      "_": "${get_app_path}/files/usr/bin/env",
+      "OLDPWD": "${get_app_path}/files",
+    };
+  }
+
   void _startPty() {
     pty = Pty.start(
       shell,
       workingDirectory: getAppDir(),
+      environment: getEnv(),
       columns: terminal.viewWidth,
       rows: terminal.viewHeight,
     );
