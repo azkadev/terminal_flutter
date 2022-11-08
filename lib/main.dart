@@ -322,16 +322,20 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-}
 
-String get shell {
-  if (Platform.isMacOS || Platform.isLinux) {
-    return Platform.environment['SHELL'] ?? 'bash';
+  String get shell {
+    if (Platform.isMacOS || Platform.isLinux) {
+      return Platform.environment['SHELL'] ?? 'bash';
+    }
+
+    if (Platform.isWindows) {
+      return 'cmd.exe';
+    }
+    String? get_app_path = getAppDir();
+    if (get_app_path != null) {
+      return "${get_app_path}/files/usr/bin/bash";
+    }
+
+    return 'sh';
   }
-
-  if (Platform.isWindows) {
-    return 'cmd.exe';
-  }
-
-  return 'sh';
 }
