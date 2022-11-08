@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
- 
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; 
+import 'package:flutter/services.dart';
 import 'package:flutter_pty/flutter_pty.dart';
-import 'package:xterm/xterm.dart'; 
+import 'package:xterm/xterm.dart';
 
 class AppPlatformMenu extends StatefulWidget {
   const AppPlatformMenu({super.key, required this.child});
@@ -151,9 +151,10 @@ class _AppPlatformMenuState extends State<AppPlatformMenu> {
     );
   }
 }
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
- 
+
   runApp(MyApp());
 }
 
@@ -165,7 +166,6 @@ bool get isDesktop {
     TargetPlatform.macOS,
   ].contains(defaultTargetPlatform);
 }
- 
 
 class MyApp extends StatelessWidget {
   @override
@@ -214,10 +214,7 @@ class _HomeState extends State<Home> {
       rows: terminal.viewHeight,
     );
 
-    pty.output
-        .cast<List<int>>()
-        .transform(Utf8Decoder())
-        .listen(terminal.write);
+    pty.output.cast<List<int>>().transform(Utf8Decoder()).listen(terminal.write);
 
     pty.exitCode.then((code) {
       terminal.write('the process exited with exit code $code');
