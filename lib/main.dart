@@ -5,11 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; 
 import 'package:flutter_pty/flutter_pty.dart';
-import 'package:xterm/xterm.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+import 'package:xterm/xterm.dart'; 
 
 class AppPlatformMenu extends StatefulWidget {
   const AppPlatformMenu({super.key, required this.child});

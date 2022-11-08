@@ -1,0 +1,58 @@
+name: windows test
+on: [workflow_dispatch]
+
+jobs:
+  build:
+    name: Compile Program dart cross platform @azkadev
+    runs-on: windows-latest
+
+    steps:
+      - name: Export Release Timestamp
+        run: echo "APP_VERSION=v$(date +'%Y.%m.%d.%H.%M.%S')" >> $GITHUB_ENV
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: "15"
+          distribution: "adopt"
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.3.7"
+          channel: "stable"
+      - name: check dart version
+        run: dart --version
+      - name: Set Flutter enable devices
+        run: |
+          flutter config --enable-web
+          flutter config --enable-linux-desktop
+          flutter config --enable-macos-desktop
+          flutter config --enable-windows-desktop
+          flutter config --enable-android
+          flutter config --enable-ios
+      # Activate flutter distribute
+      - name: Activate Flutter Distribute
+        run: dart pub global activate flutter_distributor
+      # Compile specta app
+      - name: Compile Application For Desktop 
+        run: |
+          cd specta_app
+          flutter pub get
+          flutter_distributor package --platform windows --targets msix
+      - name: Publish artifact
+        uses: actions/upload-artifact@v3 
+        with:
+          name: Artifact
+          path: dist/*
+      - name: Publish Release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ github.token }}"
+          automatic_release_tag: "latest-${{ matrix.output-name }}"
+          prerelease: false
+          title: "Release ${{ matrix.output-name }}"
+          files: |
+            dist/*/*
