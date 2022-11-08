@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_pty/flutter_pty.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:xterm/xterm.dart';
 
 class AppPlatformMenu extends StatefulWidget {
@@ -152,10 +153,13 @@ class _AppPlatformMenuState extends State<AppPlatformMenu> {
   }
 }
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Directory app_dir = await getApplicationSupportDirectory();
 
-  runApp(MyApp());
+  runApp(MyApp(
+    app_dir: app_dir,
+  ));
 }
 
 bool get isDesktop {
@@ -168,19 +172,33 @@ bool get isDesktop {
 }
 
 class MyApp extends StatelessWidget {
+  final Directory app_dir;
+  const MyApp({
+    super.key,
+    required this.app_dir,
+  });
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'xterm.dart demo',
       debugShowCheckedModeBanner: false,
-      home: AppPlatformMenu(child: Home()),
+      home: AppPlatformMenu(
+        child: Home(
+          app_dir: app_dir,
+        ),
+      ),
       // shortcuts: ,
     );
   }
 }
 
 class Home extends StatefulWidget {
-  Home({Key? key}) : super(key: key);
+  final Directory app_dir;
+  const Home({
+    super.key,
+    required this.app_dir,
+  });
 
   @override
   // ignore: library_private_types_in_public_api
@@ -207,20 +225,28 @@ class _HomeState extends State<Home> {
     );
   }
 
+  String? getAppDir() {
+    if (Platform.isAndroid || Platform.isIOS) {
+      return widget.app_dir.path;
+    }
+    return null;
+  }
+
   void _startPty() {
     pty = Pty.start(
       shell,
+      workingDirectory: getAppDir(),
       columns: terminal.viewWidth,
       rows: terminal.viewHeight,
     );
 
-    pty.output.cast<List<int>>().transform(Utf8Decoder()).listen(terminal.write);
+    pty.output.cast<List<int>>().transform(const Utf8Decoder()).listen(terminal.write);
 
     pty.exitCode.then((code) {
       terminal.write('the process exited with exit code $code');
     });
 
-    terminal.onOutput = (data) {
+    terminal.onOutput = (String data) {
       pty.write(const Utf8Encoder().convert(data));
     };
 
@@ -233,27 +259,27 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: SafeArea(
-        child: TerminalView(
-          terminal,
-          controller: terminalController,
-          autofocus: true,
-          backgroundOpacity: 0.7,
-          onSecondaryTapDown: (details, offset) async {
-            final selection = terminalController.selection;
-            if (selection != null) {
-              final text = terminal.buffer.getText(selection);
-              terminalController.clearSelection();
-              await Clipboard.setData(ClipboardData(text: text));
-            } else {
-              final data = await Clipboard.getData('text/plain');
-              final text = data?.text;
-              if (text != null) {
-                terminal.paste(text);
-              }
+      body: TerminalView(
+        terminal,
+        controller: terminalController,
+        autofocus: true,
+        backgroundOpacity: 0.7,
+        simulateScroll: true,
+        padding: const EdgeInsets.all(5),
+        onSecondaryTapDown: (details, offset) async {
+          final selection = terminalController.selection;
+          if (selection != null) {
+            final text = terminal.buffer.getText(selection);
+            terminalController.clearSelection();
+            await Clipboard.setData(ClipboardData(text: text));
+          } else {
+            final data = await Clipboard.getData('text/plain');
+            final text = data?.text;
+            if (text != null) {
+              terminal.paste(text);
             }
-          },
-        ),
+          }
+        },
       ),
     );
   }
