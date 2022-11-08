@@ -61,8 +61,8 @@ jobs:
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: "${{ github.token }}"
-          automatic_release_tag: "latest-${{ matrix.output-name }}"
+          automatic_release_tag: "latest-android"
           prerelease: false
-          title: "Release ${{ matrix.output-name }}"
+          title: "Release android"
           files: |
             result/*
