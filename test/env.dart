@@ -35,8 +35,10 @@ OLDPWD=/data/data/com.termux/files
   for (var i = 0; i < datas.length; i++) {
     // ignore: non_constant_identifier_names
     String data = datas[i];
+     
+    print("export ${data.replaceAll(RegExp(r"/data/data/com.termux/",  caseSensitive: false), r"/data/data/com.example.terminal/")}");
     List<String> get_data = data.split("=");
     jsonData[get_data.first] = get_data.last;
   }
-  print(json.encode(jsonData));
+  // print(json.encode(jsonData));
 }

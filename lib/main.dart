@@ -333,7 +333,7 @@ class _HomeState extends State<Home> {
     }
     String? get_app_path = getAppDir();
     if (get_app_path != null) {
-      return "${get_app_path}/files/usr/bin/bash";
+      return "${get_app_path}/files/usr/bin/sh";
     }
 
     return 'sh';
