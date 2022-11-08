@@ -274,7 +274,7 @@ class _HomeState extends State<Home> {
     pty = Pty.start(
       shell,
       workingDirectory: getAppDir(),
-      environment: getEnv(),
+      // environment: getEnv(),
       columns: terminal.viewWidth,
       rows: terminal.viewHeight,
     );
@@ -331,10 +331,10 @@ class _HomeState extends State<Home> {
     if (Platform.isWindows) {
       return 'cmd.exe';
     }
-    String? get_app_path = getAppDir();
-    if (get_app_path != null) {
-      return "${get_app_path}/files/usr/bin/sh";
-    }
+    // String? get_app_path = getAppDir();
+    // if (get_app_path != null) {
+    //   return "${get_app_path}/files/usr/bin/sh";
+    // }
 
     return 'sh';
   }
