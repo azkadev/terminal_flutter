@@ -163,14 +163,15 @@ void main() async {
   runApp(MyApp(
     app_dir: app_dir,
   ));
-
-  doWhenWindowReady(() {
-    const initialSize = Size(600, 450);
-    appWindow.minSize = initialSize;
-    appWindow.size = initialSize;
-    appWindow.alignment = Alignment.center;
-    appWindow.show();
-  });
+  if (isDesktop) {
+    doWhenWindowReady(() {
+      const initialSize = Size(600, 450);
+      appWindow.minSize = initialSize;
+      appWindow.size = initialSize;
+      appWindow.alignment = Alignment.center;
+      appWindow.show();
+    });
+  }
 }
 
 bool get isDesktop {
@@ -306,6 +307,8 @@ class _HomeState extends State<Home> {
     };
   }
 
+  List<ItemData> items = [ItemData(title: "Alow")];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -324,17 +327,126 @@ class _HomeState extends State<Home> {
                 color: Color.fromARGB(255, 7, 7, 7),
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(10),
-                  topLeft: Radius.circular(10)
-                )
+                  topLeft: Radius.circular(10),
+                ),
               ),
               clipBehavior: Clip.antiAlias,
               child: MoveWindow(
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Spacer(),
-                      MinimizeWindowButton(colors: buttonColors),
-                      MaximizeWindowButton(colors: buttonColors),
-                      CloseWindowButton(colors: closeButtonColors),
+                    Expanded(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Flexible(
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              primary: false,
+                              shrinkWrap: true,
+                              itemCount: items.length,
+                              itemBuilder: (context, index) {
+                                ItemData itemData = items[index];
+                                return Padding(
+                                  padding: EdgeInsets.all(2),
+                                  child: Container(
+                                    height: 20,
+                                    width: 150,
+                                    decoration: const BoxDecoration(
+                                      color: Color.fromARGB(255, 255, 255, 255),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(5),
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black12,
+                                          spreadRadius: 0,
+                                          blurRadius: 5,
+                                        ),
+                                        BoxShadow(
+                                          color: Colors.black12,
+                                          spreadRadius: 0,
+                                          blurRadius: 5,
+                                        ),
+                                        BoxShadow(
+                                          color: Colors.black12,
+                                          spreadRadius: 0,
+                                          blurRadius: 5,
+                                        ),
+                                      ],
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.all(2),
+                                          child: Text(
+                                            index.toString(),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.all(2),
+                                          child: Text(
+                                            itemData.title,
+                                          ),
+                                        ),
+                                        MaterialButton(
+                                          minWidth: 0,
+                                          onPressed: () {
+                                            setState(() {
+                                              items.removeAt(index);
+                                            });
+                                          },
+                                          child: Icon(
+                                            Icons.close,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          MaterialButton(
+                            minWidth: 0,
+                            onPressed: () {
+                              setState(() {
+                                items.add(items.first);
+                              });
+                            },
+                            child: Icon(
+                              Icons.add,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      // ignore: prefer_const_constructors
+                      padding: EdgeInsets.only(left: 15),
+                      child: Row(
+                        children: [
+                          MaterialButton(
+                            minWidth: 0,
+                            onPressed: () { 
+                              
+                            },
+                            child: Icon(
+                              Icons.settings,
+                              color: Colors.white,
+                            ),
+                          ),
+                          MinimizeWindowButton(colors: buttonColors),
+                          MaximizeWindowButton(colors: buttonColors),
+                          CloseWindowButton(
+                            colors: closeButtonColors,
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -402,3 +514,10 @@ final closeButtonColors = WindowButtonColors(
   iconNormal: const Color.fromARGB(255, 255, 255, 255),
   iconMouseOver: const Color.fromARGB(255, 255, 0, 0),
 );
+
+class ItemData {
+  final String title;
+  ItemData({
+    required this.title,
+  });
+}
