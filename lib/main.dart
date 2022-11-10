@@ -220,10 +220,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   Terminal terminal = Terminal(
     maxLines: 10000,
-  );
-  Terminal terminal2 = Terminal(
-    maxLines: 10000,
-  );
+  ); 
 
   final terminalController = TerminalController();
 
