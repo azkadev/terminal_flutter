@@ -1,6 +1,6 @@
-# Terminal
+# Terminal Flutter
 
-Terminal Native dari flutter
+Terminal Flutter app dan library support all platform
 
 ![](screenshots/terminal.png)
 
