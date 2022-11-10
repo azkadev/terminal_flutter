@@ -2,7 +2,6 @@
 
 part of terminal_page;
 
-
 final buttonColors = WindowButtonColors(
   iconNormal: const Color.fromARGB(255, 255, 255, 255),
   mouseOver: const Color.fromARGB(255, 63, 63, 63),
@@ -18,7 +17,6 @@ final closeButtonColors = WindowButtonColors(
   iconMouseOver: const Color.fromARGB(255, 255, 0, 0),
 );
 
-
 class TerminalPage extends StatefulWidget {
   final Directory app_dir;
   const TerminalPage({
@@ -32,7 +30,6 @@ class TerminalPage extends StatefulWidget {
 }
 
 class _TerminalPageState extends State<TerminalPage> {
-
   late List<TerminalClient> terminalClients = [
     TerminalClient(
       title: "Helo",
@@ -51,9 +48,27 @@ class _TerminalPageState extends State<TerminalPage> {
     WidgetsBinding.instance.endOfFrame.then(
       (_) {
         if (mounted) {
-          setState(() {
-            getTerminalNow;
-          });
+          TerminalClient terminalClient = getTerminalNow;
+          setState(() {});
+
+          String text = """
+Welcome to Terminal!
+
+Docs:       https://github.com/azkadev/terminal_flutter
+Donate:     https://github.com/azkadev/terminal_flutter
+Community:  https://github.com/azkadev/terminal_flutter
+
+Working with packages:
+
+ - Search:  apt search <query>
+ - Install: apt install <package>
+ - Upgrade: apt upgrade
+
+Report issues at https://github.com/azkadev/terminal_flutter
+""";
+      terminalClient.terminal.write(text.split("\n").join("\t"));
+
+          return;
         }
       },
     );
@@ -66,8 +81,8 @@ class _TerminalPageState extends State<TerminalPage> {
     return null;
   }
 
-  Color pickerColor = Color(0xff443a49);
-  Color currentColor = Color.fromARGB(255, 41, 55, 69);
+  Color pickerColor = const Color(0xff443a49);
+  Color currentColor = const Color.fromARGB(255, 41, 55, 69);
 
 // ValueChanged<Color> callback
   void changeColor(Color color) {
@@ -160,12 +175,14 @@ class _TerminalPageState extends State<TerminalPage> {
                                               index.toString(),
                                             ),
                                           ),
-                                          Padding(
+                                          Flexible(
+                                              child: Padding(
                                             padding: const EdgeInsets.all(2),
                                             child: Text(
                                               terminalClient.title,
+                                              overflow: TextOverflow.ellipsis,
                                             ),
-                                          ),
+                                          )),
                                           MaterialButton(
                                             minWidth: 0,
                                             onPressed: () {
@@ -219,7 +236,7 @@ class _TerminalPageState extends State<TerminalPage> {
             Expanded(
               child: TerminalView(
                 getTerminalNow.terminal,
-                theme: TerminalThemes.whiteOnBlack,
+                theme: TerminalThemes.defaultTheme,
                 controller: getTerminalNow.terminalController,
                 textScaleFactor: textScaleFactor,
                 autofocus: true,
@@ -334,6 +351,5 @@ class _TerminalPageState extends State<TerminalPage> {
         colors: closeButtonColors,
       ),
     ];
-  } 
-  
+  }
 }

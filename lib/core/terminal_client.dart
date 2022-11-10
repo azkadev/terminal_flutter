@@ -1,6 +1,5 @@
 part of terminal_core;
 
-
 class TerminalClient {
   late String title;
   late Terminal terminal;
@@ -39,14 +38,19 @@ class TerminalClient {
       rows: terminal.viewHeight,
     );
 
+    // pty.output.cast<List<int>>().transform(const Utf8Decoder()).listen(terminal.write);
     pty.output.cast<List<int>>().transform(const Utf8Decoder()).listen(terminal.write);
-
+     
     pty.exitCode.then((code) {
+      isActive = false;
       terminal.write('the process exited with exit code $code');
     });
 
     terminal.onOutput = (String data) {
       pty.write(const Utf8Encoder().convert(data));
+    };
+    terminal.onTitleChange = (String data) {
+      title = data;
     };
 
     terminal.onResize = (w, h, pw, ph) {
