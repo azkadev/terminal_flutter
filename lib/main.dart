@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,7 +28,7 @@ class _AppPlatformMenuState extends State<AppPlatformMenu> {
     }
 
     return PlatformMenuBar(
-      menus: <MenuItem>[
+      menus: [
         PlatformMenu(
           label: 'TerminalStudio',
           menus: [
@@ -162,6 +163,14 @@ void main() async {
   runApp(MyApp(
     app_dir: app_dir,
   ));
+
+  doWhenWindowReady(() {
+    const initialSize = Size(600, 450);
+    appWindow.minSize = initialSize;
+    appWindow.size = initialSize;
+    appWindow.alignment = Alignment.center;
+    appWindow.show();
+  });
 }
 
 bool get isDesktop {
@@ -209,12 +218,11 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   Terminal terminal = Terminal(
-    maxLines: 10000, 
+    maxLines: 10000,
   );
   Terminal terminal2 = Terminal(
-    maxLines: 10000, 
+    maxLines: 10000,
   );
-
 
   final terminalController = TerminalController();
 
@@ -302,29 +310,63 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: TerminalView(
-        terminal,
-        theme: TerminalThemes.whiteOnBlack,
-        controller: terminalController,
-        autofocus: true, 
-        backgroundOpacity: 0.7,
-        simulateScroll: true,
-        padding: const EdgeInsets.all(5),
-        alwaysShowCursor: true, 
-        onSecondaryTapDown: (details, offset) async {
-          final selection = terminalController.selection;
-          if (selection != null) {
-            final text = terminal.buffer.getText(selection);
-            terminalController.clearSelection();
-            await Clipboard.setData(ClipboardData(text: text));
-          } else {
-            final data = await Clipboard.getData('text/plain');
-            final text = data?.text;
-            if (text != null) {
-              terminal.paste(text);
-            }
-          }
-        },
+      body: ConstrainedBox(
+        constraints: const BoxConstraints(
+          minHeight: 0,
+          minWidth: 0,
+        ),
+        child: Column(
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: 30,
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 7, 7, 7),
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(10),
+                  topLeft: Radius.circular(10)
+                )
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: MoveWindow(
+                child: Row(
+                  children: [
+                    const Spacer(),
+                      MinimizeWindowButton(colors: buttonColors),
+                      MaximizeWindowButton(colors: buttonColors),
+                      CloseWindowButton(colors: closeButtonColors),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              child: TerminalView(
+                terminal,
+                theme: TerminalThemes.whiteOnBlack,
+                controller: terminalController,
+                autofocus: true,
+                backgroundOpacity: 1,
+                simulateScroll: true,
+                padding: const EdgeInsets.all(5),
+                alwaysShowCursor: true,
+                onSecondaryTapDown: (details, offset) async {
+                  final selection = terminalController.selection;
+                  if (selection != null) {
+                    final text = terminal.buffer.getText(selection);
+                    terminalController.clearSelection();
+                    await Clipboard.setData(ClipboardData(text: text));
+                  } else {
+                    final data = await Clipboard.getData('text/plain');
+                    final text = data?.text;
+                    if (text != null) {
+                      terminal.paste(text);
+                    }
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -345,3 +387,18 @@ class _HomeState extends State<Home> {
     return 'sh';
   }
 }
+
+final buttonColors = WindowButtonColors(
+  iconNormal: const Color.fromARGB(255, 255, 255, 255),
+  mouseOver: const Color.fromARGB(255, 63, 63, 63),
+  mouseDown: const Color.fromARGB(255, 255, 255, 255),
+  iconMouseOver: const Color.fromARGB(255, 255, 255, 255),
+  iconMouseDown: const Color.fromARGB(255, 255, 255, 255),
+);
+
+final closeButtonColors = WindowButtonColors(
+  mouseOver: const Color.fromARGB(255, 255, 255, 255),
+  mouseDown: const Color.fromARGB(255, 255, 255, 255),
+  iconNormal: const Color.fromARGB(255, 255, 255, 255),
+  iconMouseOver: const Color.fromARGB(255, 255, 0, 0),
+);
