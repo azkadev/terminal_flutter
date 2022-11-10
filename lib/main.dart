@@ -314,6 +314,8 @@ class _HomeState extends State<Home> {
     setState(() => pickerColor = color);
   }
 
+  late double textScaleFactor = 1;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -447,6 +449,7 @@ class _HomeState extends State<Home> {
                 terminal,
                 theme: TerminalThemes.whiteOnBlack,
                 controller: terminalController,
+                textScaleFactor: textScaleFactor,
                 autofocus: true,
                 backgroundOpacity: 0,
                 simulateScroll: true,
@@ -474,45 +477,83 @@ class _HomeState extends State<Home> {
     );
   }
 
+  scaleDown() {
+    if (textScaleFactor - 0.2 <= 0) {
+      return;
+    }
+    setState(() {
+      textScaleFactor = (textScaleFactor - 0.2);
+    });
+  }
+
+  scaleUp() {
+    setState(() {
+      textScaleFactor = (textScaleFactor + 0.2);
+    });
+  }
+
   List<Widget> topBar() {
-    Widget setting = MaterialButton(
-      minWidth: 0,
-      onPressed: ()async {
-        return await showDialog(
-          builder: (context) {
-            return AlertDialog(
-              title: const Text('Pick a color!'),
-              content: SingleChildScrollView(
-                child: ColorPicker(
-                  pickerColor: pickerColor,
-                  onColorChanged: changeColor,
-                ),
-              ),
-              actions:[
-                ElevatedButton(
-                  child: const Text('Got it'),
-                  onPressed: () {
-                    setState(() => currentColor = pickerColor);
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-          context: context,
-        );
-      },
-      hoverColor: const Color.fromARGB(255, 63, 63, 63),
-      child: const Icon(
-        Icons.settings,
-        color: Colors.white,
+    List<Widget> setting = [
+      MaterialButton(
+        minWidth: 0,
+        onPressed: () {
+          scaleDown();
+        },
+        hoverColor: const Color.fromARGB(255, 63, 63, 63),
+        child: MinimizeIcon(
+          color: Colors.white,
+        ),
       ),
-    );
+      MaterialButton(
+        minWidth: 0,
+        onPressed: () {
+          scaleUp();
+        },
+        hoverColor: const Color.fromARGB(255, 63, 63, 63),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+      ),
+      MaterialButton(
+        minWidth: 0,
+        onPressed: () async {
+          return await showDialog(
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('Pick a color!'),
+                content: SingleChildScrollView(
+                  child: ColorPicker(
+                    pickerColor: pickerColor,
+                    onColorChanged: changeColor,
+                  ),
+                ),
+                actions: [
+                  ElevatedButton(
+                    child: const Text('Got it'),
+                    onPressed: () {
+                      setState(() => currentColor = pickerColor);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+            context: context,
+          );
+        },
+        hoverColor: const Color.fromARGB(255, 63, 63, 63),
+        child: const Icon(
+          Icons.settings,
+          color: Colors.white,
+        ),
+      ),
+    ];
     if (!isDesktop) {
-      return [setting];
+      return setting;
     }
     return [
-      setting,
+      ...setting,
       MinimizeWindowButton(colors: buttonColors),
       MaximizeWindowButton(colors: buttonColors),
       CloseWindowButton(
