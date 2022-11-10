@@ -309,7 +309,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor:  Color.fromARGB(255,41,55,69),
       body: ConstrainedBox(
         constraints: const BoxConstraints(
           minHeight: 0,
@@ -321,11 +321,7 @@ class _HomeState extends State<Home> {
               width: MediaQuery.of(context).size.width,
               height: 30,
               decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 7, 7, 7),
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(10),
-                  topLeft: Radius.circular(10),
-                ),
+                color: Color.fromARGB(255,41,55,69), 
               ),
               clipBehavior: Clip.antiAlias,
               child: MoveWindow(
@@ -444,7 +440,7 @@ class _HomeState extends State<Home> {
                 theme: TerminalThemes.whiteOnBlack,
                 controller: terminalController,
                 autofocus: true,
-                backgroundOpacity: 1,
+                backgroundOpacity: 0,
                 simulateScroll: true,
                 padding: const EdgeInsets.all(5),
                 alwaysShowCursor: true,
