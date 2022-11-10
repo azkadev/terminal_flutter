@@ -1,0 +1,68 @@
+name: Compile Android
+on: [workflow_dispatch]
+
+jobs:
+  build:
+    name: Compile Program dart Android @azkadev
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Export Release Timestamp
+        run: echo "APP_VERSION=v$(date +'%Y.%m.%d.%H.%M.%S')" >> $GITHUB_ENV
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: "15"
+          distribution: "adopt"
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.3.7"
+          channel: "stable"
+      - name: check dart version
+        run: dart --version
+      - name: Install Dependencies
+        run: |
+          sudo apt update -y
+          sudo apt-get install -y make git zlib1g-dev libssl-dev gperf cmake clang libc++-dev libc++abi-dev php-cli cmake g++
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev
+      - name: Mkdir result
+        run: mkdir result
+      - name: Set Flutter enable devices
+        continue-on-error: true
+        run: |
+          flutter config --enable-web
+          flutter config --enable-linux-desktop
+          flutter config --enable-macos-desktop
+          flutter config --enable-windows-desktop
+          flutter config --enable-android
+          flutter config --enable-ios
+      - name: Activate Flutter Distribute
+        continue-on-error: true
+        run: dart pub global activate flutter_distributor
+      - name: Install App Dependencies
+        run: flutter pub get
+      - name: Compile Application For Android
+        continue-on-error: true
+        run: |
+          flutter build apk --release --split-per-abi
+          mv build/app/outputs/apk/release/*.apk ./result/
+      - name: Publish artifact
+        uses: actions/upload-artifact@v3
+        continue-on-error: true
+        with:
+          name: Artifact
+          path: result/*
+      - name: Publish Release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ github.token }}"
+          automatic_release_tag: "latest-android"
+          prerelease: false
+          title: "Release android"
+          files: |
+            result/*

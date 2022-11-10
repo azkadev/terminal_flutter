@@ -1,0 +1,26 @@
+name: terminal_flutter
+description: A new Flutter project.
+repository: https://github.com/azkadev/terminal_flutter.git
+publish_to: 'none'
+version: 0.0.0
+environment:
+  sdk: '>=2.18.2 <3.0.0'
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  xterm: ^3.4.0
+  flutter_pty: ^0.3.1
+  path_provider: ^2.0.11
+  bitsdojo_window: ^0.1.5
+  flutter_colorpicker: ^1.0.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/icon/ 
