@@ -208,9 +208,13 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final terminal = Terminal(
-    maxLines: 10000,
+  Terminal terminal = Terminal(
+    maxLines: 10000, 
   );
+  Terminal terminal2 = Terminal(
+    maxLines: 10000, 
+  );
+
 
   final terminalController = TerminalController();
 
@@ -300,11 +304,13 @@ class _HomeState extends State<Home> {
       backgroundColor: Colors.transparent,
       body: TerminalView(
         terminal,
+        theme: TerminalThemes.whiteOnBlack,
         controller: terminalController,
-        autofocus: true,
+        autofocus: true, 
         backgroundOpacity: 0.7,
         simulateScroll: true,
         padding: const EdgeInsets.all(5),
+        alwaysShowCursor: true, 
         onSecondaryTapDown: (details, offset) async {
           final selection = terminalController.selection;
           if (selection != null) {
