@@ -66,7 +66,7 @@ Working with packages:
 
 Report issues at https://github.com/azkadev/terminal_flutter
 """;
-      terminalClient.terminal.write(text.split("\n").join("\t"));
+          terminalClient.terminal.write(text.split("\n").join("\t"));
 
           return;
         }
@@ -176,13 +176,14 @@ Report issues at https://github.com/azkadev/terminal_flutter
                                             ),
                                           ),
                                           Flexible(
-                                              child: Padding(
-                                            padding: const EdgeInsets.all(2),
-                                            child: Text(
-                                              terminalClient.title,
-                                              overflow: TextOverflow.ellipsis,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(2),
+                                              child: Text(
+                                                terminalClient.title,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
                                             ),
-                                          )),
+                                          ),
                                           MaterialButton(
                                             minWidth: 0,
                                             onPressed: () {
@@ -309,29 +310,38 @@ Report issues at https://github.com/azkadev/terminal_flutter
       MaterialButton(
         minWidth: 0,
         onPressed: () async {
-          return await showDialog(
-            builder: (context) {
-              return AlertDialog(
-                title: const Text('Pick a color!'),
-                content: SingleChildScrollView(
-                  child: ColorPicker(
-                    pickerColor: pickerColor,
-                    onColorChanged: changeColor,
-                  ),
-                ),
-                actions: [
-                  ElevatedButton(
-                    child: const Text('Got it'),
-                    onPressed: () {
-                      setState(() => currentColor = pickerColor);
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
+          await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) {
+              return SettingPage(
+                app_dir: widget.app_dir,
               );
-            },
-            context: context,
+            }),
           );
+          return;
+          // return await showDialog(
+          //   builder: (context) {
+          //     return AlertDialog(
+          //       title: const Text('Pick a color!'),
+          //       content: SingleChildScrollView(
+          //         child: ColorPicker(
+          //           pickerColor: pickerColor,
+          //           onColorChanged: changeColor,
+          //         ),
+          //       ),
+          //       actions: [
+          //         ElevatedButton(
+          //           child: const Text('Got it'),
+          //           onPressed: () {
+          //             setState(() => currentColor = pickerColor);
+          //             Navigator.of(context).pop();
+          //           },
+          //         ),
+          //       ],
+          //     );
+          //   },
+          //   context: context,
+          // );
         },
         hoverColor: const Color.fromARGB(255, 63, 63, 63),
         child: const Icon(
