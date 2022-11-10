@@ -7,6 +7,7 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_pty/flutter_pty.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:xterm/xterm.dart';
@@ -220,7 +221,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   Terminal terminal = Terminal(
     maxLines: 10000,
-  ); 
+  );
 
   final terminalController = TerminalController();
 
@@ -305,11 +306,18 @@ class _HomeState extends State<Home> {
   }
 
   List<ItemData> items = [ItemData(title: "Alow")];
+  Color pickerColor = Color(0xff443a49);
+  Color currentColor = Color.fromARGB(255, 41, 55, 69);
+
+// ValueChanged<Color> callback
+  void changeColor(Color color) {
+    setState(() => pickerColor = color);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:  Color.fromARGB(255,41,55,69),
+      backgroundColor: currentColor,
       body: ConstrainedBox(
         constraints: const BoxConstraints(
           minHeight: 0,
@@ -320,8 +328,8 @@ class _HomeState extends State<Home> {
             Container(
               width: MediaQuery.of(context).size.width,
               height: 30,
-              decoration: const BoxDecoration(
-                color: Color.fromARGB(255,41,55,69), 
+              decoration: BoxDecoration(
+                color: currentColor,
               ),
               clipBehavior: Clip.antiAlias,
               child: MoveWindow(
@@ -469,7 +477,31 @@ class _HomeState extends State<Home> {
   List<Widget> topBar() {
     Widget setting = MaterialButton(
       minWidth: 0,
-      onPressed: () {},
+      onPressed: ()async {
+        return await showDialog(
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('Pick a color!'),
+              content: SingleChildScrollView(
+                child: ColorPicker(
+                  pickerColor: pickerColor,
+                  onColorChanged: changeColor,
+                ),
+              ),
+              actions:[
+                ElevatedButton(
+                  child: const Text('Got it'),
+                  onPressed: () {
+                    setState(() => currentColor = pickerColor);
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+          context: context,
+        );
+      },
       hoverColor: const Color.fromARGB(255, 63, 63, 63),
       child: const Icon(
         Icons.settings,
