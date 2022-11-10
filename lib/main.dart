@@ -348,7 +348,7 @@ class _HomeState extends State<Home> {
                               itemBuilder: (context, index) {
                                 ItemData itemData = items[index];
                                 return Padding(
-                                  padding: EdgeInsets.all(2),
+                                  padding: const EdgeInsets.all(2),
                                   child: Container(
                                     height: 20,
                                     width: 150,
@@ -375,34 +375,39 @@ class _HomeState extends State<Home> {
                                         ),
                                       ],
                                     ),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.all(2),
-                                          child: Text(
-                                            index.toString(),
+                                    child: MaterialButton(
+                                      minWidth: 0,
+                                      onPressed: () {},
+                                      hoverColor: const Color.fromARGB(255, 63, 63, 63),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(2),
+                                            child: Text(
+                                              index.toString(),
+                                            ),
                                           ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.all(2),
-                                          child: Text(
-                                            itemData.title,
+                                          Padding(
+                                            padding: const EdgeInsets.all(2),
+                                            child: Text(
+                                              itemData.title,
+                                            ),
                                           ),
-                                        ),
-                                        MaterialButton(
-                                          minWidth: 0,
-                                          onPressed: () {
-                                            setState(() {
-                                              items.removeAt(index);
-                                            });
-                                          },
-                                          child: Icon(
-                                            Icons.close,
-                                            color: Colors.black,
+                                          MaterialButton(
+                                            minWidth: 0,
+                                            onPressed: () {
+                                              setState(() {
+                                                items.removeAt(index);
+                                              });
+                                            },
+                                            child: const Icon(
+                                              Icons.close,
+                                              color: Colors.black,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 );
@@ -416,7 +421,8 @@ class _HomeState extends State<Home> {
                                 items.add(items.first);
                               });
                             },
-                            child: Icon(
+                            hoverColor: const Color.fromARGB(255, 63, 63, 63),
+                            child: const Icon(
                               Icons.add,
                               color: Colors.white,
                             ),
@@ -428,23 +434,7 @@ class _HomeState extends State<Home> {
                       // ignore: prefer_const_constructors
                       padding: EdgeInsets.only(left: 15),
                       child: Row(
-                        children: [
-                          MaterialButton(
-                            minWidth: 0,
-                            onPressed: () { 
-                              
-                            },
-                            child: Icon(
-                              Icons.settings,
-                              color: Colors.white,
-                            ),
-                          ),
-                          MinimizeWindowButton(colors: buttonColors),
-                          MaximizeWindowButton(colors: buttonColors),
-                          CloseWindowButton(
-                            colors: closeButtonColors,
-                          ),
-                        ],
+                        children: topBar(),
                       ),
                     ),
                   ],
@@ -481,6 +471,29 @@ class _HomeState extends State<Home> {
         ),
       ),
     );
+  }
+
+  List<Widget> topBar() {
+    Widget setting = MaterialButton(
+      minWidth: 0,
+      onPressed: () {},
+      hoverColor: const Color.fromARGB(255, 63, 63, 63),
+      child: const Icon(
+        Icons.settings,
+        color: Colors.white,
+      ),
+    );
+    if (!isDesktop) {
+      return [setting];
+    }
+    return [
+      setting,
+      MinimizeWindowButton(colors: buttonColors),
+      MaximizeWindowButton(colors: buttonColors),
+      CloseWindowButton(
+        colors: closeButtonColors,
+      ),
+    ];
   }
 
   String get shell {
