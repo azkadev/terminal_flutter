@@ -1,6 +1,6 @@
 # the name used to display in the OS. Specifically desktop
 # entry name
-display_name: Terminal Azkadev
+display_name: Terminal
 
 # package name for debian/apt repository
 # the name should be all lowercase with -+.
