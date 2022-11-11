@@ -11,5 +11,7 @@ import 'package:terminal_flutter/core/core.dart';
 import 'package:terminal_flutter/widget/widget.dart';
 import 'package:xterm/xterm.dart';
 import "package:iconsax/iconsax.dart";
+
+import 'package:simulate/simulate.dart';
 part "setting.dart";
 part "terminal.dart";
