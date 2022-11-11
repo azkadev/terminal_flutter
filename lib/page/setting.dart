@@ -56,35 +56,30 @@ class _SettingPageState extends State<SettingPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: currentColor,
-                      ),
-                      clipBehavior: Clip.antiAlias,
-                      child: MoveWindow(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    HeaderApp(
+                      color: currentColor,
+                      height: 40,
+                      items: const [],
+                      isShowWindowController: false,
+                      children: [
+                        Row(
                           children: [
-                            Row(
-                              children: [
-                                MaterialButton(
-                                  minWidth: 0,
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  hoverColor: const Color.fromARGB(255, 63, 63, 63),
-                                  child: Icon(
-                                    Icons.arrow_back,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
+                            MaterialButton(
+                              minWidth: 0,
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              hoverColor: const Color.fromARGB(255, 63, 63, 63),
+                              child: Icon(
+                                Icons.arrow_back,
+                                color: Colors.white,
+                              ),
                             ),
                           ],
                         ),
-                      ),
+                      ],
                     ),
+                    
                     MaterialButton(
                       minWidth: 0,
                       onPressed: () {},
@@ -137,40 +132,33 @@ class _SettingPageState extends State<SettingPage> {
                 ),
                 child: Column(
                   children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width,
+                    HeaderApp(
+                      color: currentColor,
                       height: 40,
-                      decoration: BoxDecoration(
-                        color: currentColor,
-                      ),
-                      clipBehavior: Clip.antiAlias,
-                      child: MoveWindow(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.all(5),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Activify",
-                                      style: TextStyle(color: Colors.white, fontSize: 20),
-                                    ),
-                                  ],
+                      items: const [],
+                      isShowWindowController: false,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.all(5),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: const [
+                                Text(
+                                  "Activify",
+                                  style: TextStyle(color: Colors.white, fontSize: 20),
                                 ),
-                              ),
+                              ],
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 15),
-                              child: Row(
-                                children: topBar(),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 15),
+                          child: Row(
+                            children: topBar(),
+                          ),
+                        ),
+                      ],
                     ),
                     Divider(
                       height: 1,
@@ -192,13 +180,6 @@ class _SettingPageState extends State<SettingPage> {
     if (!isDesktop) {
       return setting;
     }
-    return [
-      ...setting,
-      MinimizeWindowButton(colors: buttonColors),
-      MaximizeWindowButton(colors: buttonColors),
-      CloseWindowButton(
-        colors: closeButtonColors,
-      ),
-    ];
+    return [...setting, ...windowController()];
   }
 }

@@ -106,140 +106,145 @@ Report issues at https://github.com/azkadev/terminal_flutter
         ),
         child: Column(
           children: [
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: 30,
-              decoration: BoxDecoration(
-                color: currentColor,
-              ),
-              clipBehavior: Clip.antiAlias,
-              child: MoveWindow(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Flexible(
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              primary: false,
-                              shrinkWrap: true,
-                              itemCount: terminalClients.length,
-                              itemBuilder: (context, index) {
-                                TerminalClient terminalClient = terminalClients[index];
-                                return Padding(
-                                  padding: const EdgeInsets.all(2),
-                                  child: Container(
-                                    height: 20,
-                                    width: 150,
-                                    decoration: const BoxDecoration(
-                                      color: Color.fromARGB(255, 255, 255, 255),
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(5),
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black12,
-                                          spreadRadius: 0,
-                                          blurRadius: 5,
-                                        ),
-                                        BoxShadow(
-                                          color: Colors.black12,
-                                          spreadRadius: 0,
-                                          blurRadius: 5,
-                                        ),
-                                        BoxShadow(
-                                          color: Colors.black12,
-                                          spreadRadius: 0,
-                                          blurRadius: 5,
-                                        ),
-                                      ],
-                                    ),
-                                    child: MaterialButton(
-                                      minWidth: 0,
-                                      onPressed: () {
-                                        setState(() {
-                                          terminalClients.setInactiveAll();
-                                          terminalClients[index].isActive = true;
-                                        });
-                                      },
-                                      hoverColor: const Color.fromARGB(255, 63, 63, 63),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(2),
-                                            child: Text(
-                                              index.toString(),
-                                            ),
-                                          ),
-                                          Flexible(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(2),
-                                              child: Text(
-                                                terminalClient.title,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ),
-                                          ),
-                                          MaterialButton(
-                                            minWidth: 0,
-                                            onPressed: () {
-                                              terminalClients.close(index: index);
-                                              setState(() {
-                                                if (terminalClients.isEmpty) {
-                                                  terminalClients.getTerminalActiveForce();
-                                                }
-                                              });
-                                            },
-                                            child: const Icon(
-                                              Icons.close,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                          MaterialButton(
-                            minWidth: 0,
-                            onPressed: () {
-                              setState(() {
-                                terminalClients.initNew();
-                              });
-                            },
-                            hoverColor: const Color.fromARGB(255, 63, 63, 63),
-                            child: const Icon(
-                              Icons.add,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      // ignore: prefer_const_constructors
-                      padding: EdgeInsets.only(left: 15),
-                      child: Row(
-                        children: topBar(),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            Header(
+              color: currentColor,
+              terminalClients: terminalClients,
+              items: topBar(),
             ),
+            // Container(
+            //   width: MediaQuery.of(context).size.width,
+            //   height: 30,
+            //   decoration: BoxDecoration(
+            //     color: currentColor,
+            //   ),
+            //   clipBehavior: Clip.antiAlias,
+            //   child: MoveWindow(
+            //     child: Row(
+            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //       children: [
+            //         Expanded(
+            //           child: Row(
+            //             mainAxisSize: MainAxisSize.min,
+            //             children: [
+            //               Flexible(
+            //                 child: ListView.builder(
+            //                   scrollDirection: Axis.horizontal,
+            //                   primary: false,
+            //                   shrinkWrap: true,
+            //                   itemCount: terminalClients.length,
+            //                   itemBuilder: (context, index) {
+            //                     TerminalClient terminalClient = terminalClients[index];
+            //                     return Padding(
+            //                       padding: const EdgeInsets.all(2),
+            //                       child: Container(
+            //                         height: 20,
+            //                         width: 150,
+            //                         decoration: const BoxDecoration(
+            //                           color: Color.fromARGB(255, 255, 255, 255),
+            //                           borderRadius: BorderRadius.all(
+            //                             Radius.circular(5),
+            //                           ),
+            //                           boxShadow: [
+            //                             BoxShadow(
+            //                               color: Colors.black12,
+            //                               spreadRadius: 0,
+            //                               blurRadius: 5,
+            //                             ),
+            //                             BoxShadow(
+            //                               color: Colors.black12,
+            //                               spreadRadius: 0,
+            //                               blurRadius: 5,
+            //                             ),
+            //                             BoxShadow(
+            //                               color: Colors.black12,
+            //                               spreadRadius: 0,
+            //                               blurRadius: 5,
+            //                             ),
+            //                           ],
+            //                         ),
+            //                         child: MaterialButton(
+            //                           minWidth: 0,
+            //                           onPressed: () {
+            //                             setState(() {
+            //                               terminalClients.setInactiveAll();
+            //                               terminalClients[index].isActive = true;
+            //                             });
+            //                           },
+            //                           hoverColor: const Color.fromARGB(255, 63, 63, 63),
+            //                           child: Row(
+            //                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //                             children: [
+            //                               Padding(
+            //                                 padding: const EdgeInsets.all(2),
+            //                                 child: Text(
+            //                                   index.toString(),
+            //                                 ),
+            //                               ),
+            //                               Flexible(
+            //                                 child: Padding(
+            //                                   padding: const EdgeInsets.all(2),
+            //                                   child: Text(
+            //                                     terminalClient.title,
+            //                                     overflow: TextOverflow.ellipsis,
+            //                                   ),
+            //                                 ),
+            //                               ),
+            //                               MaterialButton(
+            //                                 minWidth: 0,
+            //                                 onPressed: () {
+            //                                   terminalClients.close(index: index);
+            //                                   setState(() {
+            //                                     if (terminalClients.isEmpty) {
+            //                                       terminalClients.getTerminalActiveForce();
+            //                                     }
+            //                                   });
+            //                                 },
+            //                                 child: const Icon(
+            //                                   Icons.close,
+            //                                   color: Colors.black,
+            //                                 ),
+            //                               ),
+            //                             ],
+            //                           ),
+            //                         ),
+            //                       ),
+            //                     );
+            //                   },
+            //                 ),
+            //               ),
+            //               MaterialButton(
+            //                 minWidth: 0,
+            //                 onPressed: () {
+            //                   setState(() {
+            //                     terminalClients.initNew();
+            //                   });
+            //                 },
+            //                 hoverColor: const Color.fromARGB(255, 63, 63, 63),
+            //                 child: const Icon(
+            //                   Icons.add,
+            //                   color: Colors.white,
+            //                 ),
+            //               ),
+            //             ],
+            //           ),
+            //         ),
+            //         Padding(
+            //           // ignore: prefer_const_constructors
+            //           padding: EdgeInsets.only(left: 15),
+            //           child: Row(
+            //             children: topBar(),
+            //           ),
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
             Expanded(
               child: TerminalView(
                 getTerminalNow.terminal,
                 theme: TerminalThemes.defaultTheme,
                 controller: getTerminalNow.terminalController,
-                textScaleFactor: textScaleFactor,
+                textScaleFactor: (textScaleFactor < 0.1)?0.1:textScaleFactor,
                 autofocus: true,
                 backgroundOpacity: 0,
                 simulateScroll: true,
@@ -267,9 +272,9 @@ Report issues at https://github.com/azkadev/terminal_flutter
     );
   }
 
-  scaleDown() {
+  void scaleDown() {
     double res = textScaleFactor - 0.2;
-    if (res <= 0) {
+    if (res < 0.1) {
       return;
     }
 
@@ -278,7 +283,7 @@ Report issues at https://github.com/azkadev/terminal_flutter
     });
   }
 
-  scaleUp() {
+  void scaleUp() {
     setState(() {
       textScaleFactor = (textScaleFactor + 0.2);
     });
@@ -350,6 +355,7 @@ Report issues at https://github.com/azkadev/terminal_flutter
         ),
       ),
     ];
+    
     if (!isDesktop) {
       return setting;
     }
@@ -362,4 +368,5 @@ Report issues at https://github.com/azkadev/terminal_flutter
       ),
     ];
   }
+
 }

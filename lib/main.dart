@@ -1,10 +1,8 @@
 // ignore_for_file: unnecessary_brace_in_string_interps, non_constant_identifier_names
 
 import 'dart:io';
-import 'package:bitsdojo_window/bitsdojo_window.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:bitsdojo_window/bitsdojo_window.dart';  
+import 'package:flutter/material.dart'; 
 
 import 'package:path_provider/path_provider.dart';
 import 'core/core.dart';
