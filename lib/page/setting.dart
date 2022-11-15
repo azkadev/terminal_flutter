@@ -3,10 +3,8 @@
 part of terminal_page;
 
 class SettingPage extends StatefulWidget {
-  final Directory app_dir;
   const SettingPage({
     super.key,
-    required this.app_dir,
   });
 
   @override
@@ -18,13 +16,6 @@ class _SettingPageState extends State<SettingPage> {
   @override
   void initState() {
     super.initState();
-  }
-
-  String? getAppDir() {
-    if (!isDesktop) {
-      return widget.app_dir.path;
-    }
-    return null;
   }
 
   Color pickerColor = const Color(0xff443a49);
@@ -79,7 +70,6 @@ class _SettingPageState extends State<SettingPage> {
                         ),
                       ],
                     ),
-                    
                     MaterialButton(
                       minWidth: 0,
                       onPressed: () {},
@@ -146,7 +136,8 @@ class _SettingPageState extends State<SettingPage> {
                               children: const [
                                 Text(
                                   "Activify",
-                                  style: TextStyle(color: Colors.white, fontSize: 20),
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 20),
                                 ),
                               ],
                             ),

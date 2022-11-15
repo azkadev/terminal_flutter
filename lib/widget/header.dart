@@ -41,125 +41,127 @@ class _HeaderApp extends State<Header> {
           color: widget.color,
         ),
         clipBehavior: Clip.antiAlias,
-        child: MoveWindow(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Flexible(
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        primary: false,
-                        shrinkWrap: true,
-                        itemCount: widget.terminalClients.length,
-                        itemBuilder: (context, index) {
-                          TerminalClient terminalClient = widget.terminalClients[index];
-                          return Padding(
-                            padding: const EdgeInsets.all(2),
-                            child: Container(
-                              height: 20,
-                              width: 150,
-                              decoration: const BoxDecoration(
-                                color: Color.fromARGB(255, 255, 255, 255),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(5),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Flexible(
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      primary: false,
+                      shrinkWrap: true,
+                      itemCount: widget.terminalClients.length,
+                      itemBuilder: (context, index) {
+                        TerminalClient terminalClient =
+                            widget.terminalClients[index];
+                        return Padding(
+                          padding: const EdgeInsets.all(2),
+                          child: Container(
+                            height: 20,
+                            width: 150,
+                            decoration: const BoxDecoration(
+                              color: Color.fromARGB(255, 255, 255, 255),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(5),
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  spreadRadius: 0,
+                                  blurRadius: 5,
                                 ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black12,
-                                    spreadRadius: 0,
-                                    blurRadius: 5,
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  spreadRadius: 0,
+                                  blurRadius: 5,
+                                ),
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  spreadRadius: 0,
+                                  blurRadius: 5,
+                                ),
+                              ],
+                            ),
+                            child: MaterialButton(
+                              minWidth: 0,
+                              onPressed: () {
+                                setState(() {
+                                  widget.terminalClients.setInactiveAll();
+                                  widget.terminalClients[index].isActive = true;
+                                });
+                              },
+                              hoverColor: const Color.fromARGB(255, 63, 63, 63),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  // Padding(
+                                  //   padding: const EdgeInsets.all(2),
+                                  //   child: Text(
+                                  //     index.toString(),
+                                  //   ),
+                                  // ),
+                                  Flexible(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(2),
+                                      child: Text(
+                                        terminalClient.title,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
                                   ),
-                                  BoxShadow(
-                                    color: Colors.black12,
-                                    spreadRadius: 0,
-                                    blurRadius: 5,
-                                  ),
-                                  BoxShadow(
-                                    color: Colors.black12,
-                                    spreadRadius: 0,
-                                    blurRadius: 5,
+                                  MaterialButton(
+                                    minWidth: 0,
+                                    onPressed: () {
+                                      widget.terminalClients
+                                          .close(index: index);
+                                      setState(() {
+                                        if (widget.terminalClients.isEmpty) {
+                                          widget.terminalClients
+                                              .getTerminalActiveForce();
+                                        }
+                                      });
+                                    },
+                                    child: const Icon(
+                                      Icons.close,
+                                      color: Colors.black,
+                                    ),
                                   ),
                                 ],
                               ),
-                              child: MaterialButton(
-                                minWidth: 0,
-                                onPressed: () {
-                                  setState(() {
-                                    widget.terminalClients.setInactiveAll();
-                                    widget.terminalClients[index].isActive = true;
-                                  });
-                                },
-                                hoverColor: const Color.fromARGB(255, 63, 63, 63),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    // Padding(
-                                    //   padding: const EdgeInsets.all(2),
-                                    //   child: Text(
-                                    //     index.toString(),
-                                    //   ),
-                                    // ),
-                                    Flexible(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(2),
-                                        child: Text(
-                                          terminalClient.title,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ),
-                                    MaterialButton(
-                                      minWidth: 0,
-                                      onPressed: () {
-                                        widget.terminalClients.close(index: index);
-                                        setState(() {
-                                          if (widget.terminalClients.isEmpty) {
-                                            widget.terminalClients.getTerminalActiveForce();
-                                          }
-                                        });
-                                      },
-                                      child: const Icon(
-                                        Icons.close,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
                             ),
-                          );
-                        },
-                      ),
-                    ),
-                    MaterialButton(
-                      minWidth: 0,
-                      onPressed: () {
-                        setState(() {
-                          widget.terminalClients.initNew();
-                        });
+                          ),
+                        );
                       },
-                      hoverColor: const Color.fromARGB(255, 63, 63, 63),
-                      child: const Icon(
-                        Icons.add,
-                        color: Colors.white,
-                      ),
                     ),
-                  ],
-                ),
+                  ),
+                  MaterialButton(
+                    minWidth: 0,
+                    onPressed: () {
+                      setState(() {
+                        widget.terminalClients.initNew();
+                      });
+                    },
+                    hoverColor: const Color.fromARGB(255, 63, 63, 63),
+                    child: const Icon(
+                      Icons.add,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
               ),
-              Padding(
-                // ignore: prefer_const_constructors
-                padding: EdgeInsets.only(left: 15),
-                child: Row(
-                  children: topBar(),
-                ),
+            ),
+            Padding(
+              // ignore: prefer_const_constructors
+              padding: EdgeInsets.only(left: 15),
+              child: Row(
+                children: topBar(),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -220,10 +222,8 @@ class _HeaderAppState extends State<HeaderApp> {
           color: widget.color,
         ),
         clipBehavior: Clip.antiAlias,
-        child: MoveWindow(
-          child: Row(
-            children: widget.children,
-          ),
+        child: Row(
+          children: widget.children,
         ),
       ),
     );

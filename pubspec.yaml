@@ -1,8 +1,8 @@
 name: terminal_flutter
-description: A Plugable terminal flutter cross platform.
+description: A Pluggable library simple terminal flutter cross platform easy install only support device not web.
 homepage: https://youtube.com/@azkadev
 repository: https://github.com/azkadev/terminal_flutter.git
-version: 0.0.2
+version: 0.0.3
 
 environment:
   sdk: '>=2.18.2 <3.0.0'
@@ -13,8 +13,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   xterm: ^3.4.0
   flutter_pty: ^0.3.1
-  path_provider: ^2.0.11
-  bitsdojo_window: ^0.1.5
+  path_provider: ^2.0.11 
   flutter_colorpicker: ^1.0.3
   iconsax: ^0.0.8
 

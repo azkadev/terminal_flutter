@@ -9,7 +9,6 @@ import 'package:xterm/xterm.dart';
 
 part "terminal_client.dart";
 
-
 bool get isDesktop {
   if (kIsWeb) return false;
   return [

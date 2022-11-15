@@ -39,8 +39,11 @@ class TerminalClient {
     );
 
     // pty.output.cast<List<int>>().transform(const Utf8Decoder()).listen(terminal.write);
-    pty.output.cast<List<int>>().transform(const Utf8Decoder()).listen(terminal.write);
-     
+    pty.output
+        .cast<List<int>>()
+        .transform(const Utf8Decoder())
+        .listen(terminal.write);
+
     pty.exitCode.then((code) {
       isActive = false;
       terminal.write('the process exited with exit code $code');

@@ -9,7 +9,7 @@ packages:
     source: hosted
     version: "2.9.0"
   bitsdojo_window:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: bitsdojo_window
       url: "https://pub.dartlang.org"
