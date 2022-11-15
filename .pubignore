@@ -55,3 +55,4 @@ app.*.map.json
 
 dist/
 lib/main.dart
+screenshots/

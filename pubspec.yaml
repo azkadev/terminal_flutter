@@ -1,8 +1,8 @@
 name: terminal_flutter
-description: A new Flutter project.
+description: A Plugable terminal flutter cross platform.
 homepage: https://youtube.com/@azkadev
 repository: https://github.com/azkadev/terminal_flutter.git
-version: 0.0.0
+version: 0.0.2
 
 environment:
   sdk: '>=2.18.2 <3.0.0'

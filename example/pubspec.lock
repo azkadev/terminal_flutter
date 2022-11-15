@@ -316,7 +316,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.0"
+    version: "0.0.2"
   test_api:
     dependency: transitive
     description:

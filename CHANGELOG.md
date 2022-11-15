@@ -1,2 +1,2 @@
-## 0.0.0
-- init version
+## 0.0.2
+- add example
