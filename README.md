@@ -2,16 +2,15 @@
 
 Terminal Flutter app dan library support all platform
 
-![](screenshots/terminal.png)
+![](https://raw.githubusercontent.com/azkadev/terminal_flutter/mainscreenshots/terminal.png)
 
 ## Features
 1. [x] Multi shell
 2. [x] Cross platform Support (Android, iOS, Linux, macOS, Windows)
 3. [ ] Custom environment like termux (jika anda tahu chroot / sejenis itu tolong kasih saya petunjuk ya)
 4. [x] Plugable Library now you can add terminal in your app
-5. [ ] as
 
-2. Install Package
+5. Install Package
 
 ```bash
 dart pub add terminal_flutter
@@ -20,6 +19,6 @@ dart pub add terminal_flutter
 
 
 ## Screenshot
-![](/screenshots/desktop.png)
-![](/screenshots/desktop_2.png)
-![](/screenshots/mobile.png)
+![](https://raw.githubusercontent.com/azkadev/terminal_flutter/main/screenshots/desktop.png)
+![](https://raw.githubusercontent.com/azkadev/terminal_flutter/main/screenshots/desktop_2.png)
+![](https://raw.githubusercontent.com/azkadev/terminal_flutter/main/screenshots/mobile.png)
