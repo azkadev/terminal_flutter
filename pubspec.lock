@@ -365,7 +365,7 @@ packages:
       name: simulate
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.10"
+    version: "0.0.14"
   sky_engine:
     dependency: transitive
     description: flutter

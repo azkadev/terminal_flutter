@@ -11,18 +11,13 @@ Terminal Flutter app dan library support all platform
 4. [x] Plugable Library now you can add terminal in your app
 5. [ ] as
 
-## Develop
-1. Clone repo dahulu
-```bash
-git clone https://github.com/azkadev/terminal.git
-cd terminal
-```
-
 2. Install Package
 
 ```bash
-flutter pub get
+dart pub add terminal_flutter
 ```
+
+
 
 ## Screenshot
 ![](/screenshots/desktop.png)

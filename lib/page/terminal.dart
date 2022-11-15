@@ -2,20 +2,20 @@
 
 part of terminal_page;
 
-final buttonColors = WindowButtonColors(
-  iconNormal: const Color.fromARGB(255, 255, 255, 255),
-  mouseOver: const Color.fromARGB(255, 63, 63, 63),
-  mouseDown: const Color.fromARGB(255, 255, 255, 255),
-  iconMouseOver: const Color.fromARGB(255, 255, 255, 255),
-  iconMouseDown: const Color.fromARGB(255, 255, 255, 255),
-);
+// final buttonColors = WindowButtonColors(
+//   iconNormal: const Color.fromARGB(255, 255, 255, 255),
+//   mouseOver: const Color.fromARGB(255, 63, 63, 63),
+//   mouseDown: const Color.fromARGB(255, 255, 255, 255),
+//   iconMouseOver: const Color.fromARGB(255, 255, 255, 255),
+//   iconMouseDown: const Color.fromARGB(255, 255, 255, 255),
+// );
 
-final closeButtonColors = WindowButtonColors(
-  mouseOver: const Color.fromARGB(255, 255, 255, 255),
-  mouseDown: const Color.fromARGB(255, 255, 255, 255),
-  iconNormal: const Color.fromARGB(255, 255, 255, 255),
-  iconMouseOver: const Color.fromARGB(255, 255, 0, 0),
-);
+// final closeButtonColors = WindowButtonColors(
+//   mouseOver: const Color.fromARGB(255, 255, 255, 255),
+//   mouseDown: const Color.fromARGB(255, 255, 255, 255),
+//   iconNormal: const Color.fromARGB(255, 255, 255, 255),
+//   iconMouseOver: const Color.fromARGB(255, 255, 0, 0),
+// );
 
 class TerminalPage extends StatefulWidget {
   final Directory app_dir;

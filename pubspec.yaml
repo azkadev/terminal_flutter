@@ -1,7 +1,9 @@
 name: terminal_flutter
 description: A new Flutter project.
+homepage: https://youtube.com/@azkadev
 repository: https://github.com/azkadev/terminal_flutter.git
 version: 0.0.0
+
 environment:
   sdk: '>=2.18.2 <3.0.0'
 dependencies:
@@ -25,3 +27,4 @@ flutter:
   uses-material-design: true
   assets:
     - assets/icon/ 
+
