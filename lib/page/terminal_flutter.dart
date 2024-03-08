@@ -4,7 +4,6 @@ import 'dart:convert';
 
 import 'package:terminal_flutter/package/package.dart';
 
-
 class TerminalFlutter {
   late Pty pty;
   late TerminalController terminalController;
