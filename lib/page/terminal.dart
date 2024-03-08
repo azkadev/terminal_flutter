@@ -1,6 +1,16 @@
 // ignore_for_file: non_constant_identifier_names
+ 
 
-part of terminal_page;
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:terminal_flutter/core/core.dart';
+import 'package:terminal_flutter/core/terminal_client.dart';
+import 'package:terminal_flutter/page/setting.dart';
+import 'package:terminal_flutter/widget/widget.dart';
+import 'package:xterm/xterm.dart';
 
 class TerminalPage extends StatefulWidget {
   final Directory? app_dir;

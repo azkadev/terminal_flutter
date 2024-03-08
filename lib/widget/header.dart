@@ -1,4 +1,9 @@
-part of terminal_widget;
+ 
+
+import 'package:flutter/material.dart';
+import 'package:terminal_flutter/core/core.dart';
+import 'package:terminal_flutter/core/terminal_client.dart';
+import 'package:terminal_flutter/widget/window_controller.dart';
 
 class Header extends StatefulWidget {
   final EdgeInsetsGeometry? padding;

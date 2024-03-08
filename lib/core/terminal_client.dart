@@ -1,4 +1,10 @@
-part of terminal_core;
+  
+import 'dart:convert';
+import 'dart:io';
+ 
+import 'package:flutter_pty/flutter_pty.dart';
+import 'package:xterm/xterm.dart';
+ 
 
 class TerminalClient {
   late String title;

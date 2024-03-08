@@ -1,4 +1,6 @@
-part of terminal_widget;
+ 
+
+import 'package:flutter/material.dart';
 
 List<Widget> windowController() {
   return [];

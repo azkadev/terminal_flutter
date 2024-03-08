@@ -1,4 +1,4 @@
-library terminal_flutter;
+ 
 
 export "core/core.dart";
 export "page/page.dart";

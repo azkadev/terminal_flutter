@@ -12,10 +12,13 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.6
   xterm: ^3.5.0
-  flutter_pty: ^0.4.0
+  # flutter_pty: ^0.4.0
   path_provider: ^2.1.2
   flutter_colorpicker: ^1.0.3
   iconsax: ^0.0.8
+  general_lib: ^0.0.27
+  general_lib_flutter: ^0.0.17
+  flutter_pty: ^0.4.0
 
 dev_dependencies:
   flutter_test:

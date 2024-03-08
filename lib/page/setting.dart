@@ -1,6 +1,10 @@
 // ignore_for_file: non_constant_identifier_names, prefer_const_constructors
+ 
 
-part of terminal_page;
+import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:terminal_flutter/core/core.dart';
+import 'package:terminal_flutter/widget/widget.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({
