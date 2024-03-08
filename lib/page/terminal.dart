@@ -1,7 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps
 
 import 'dart:async';
-import 'dart:io';
+
 
 import 'package:archive/archive_io.dart';
 
@@ -18,6 +18,7 @@ import 'package:terminal_flutter/page/core.dart';
 import 'package:terminal_flutter/page/terminal_flutter.dart';
 
 import "package:path/path.dart" as path;
+import 'package:universal_io/io.dart';
 
 class TerminalPage extends StatefulWidget {
   final bool isHideWindowControll;

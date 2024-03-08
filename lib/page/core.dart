@@ -1,8 +1,8 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:flutter/material.dart';
-
-import 'package:xterm/core.dart';
+import 'package:terminal_flutter/package/package.dart';
+ 
 
 class VirtKeyProvider extends TerminalInputHandler with ChangeNotifier {
   bool is_ssh;

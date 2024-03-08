@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:xterm/core.dart';
+import 'package:terminal_flutter/package/package.dart';
+
 
 enum VirtKey {
   esc,

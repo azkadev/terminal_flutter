@@ -7,7 +7,20 @@ class TerminalController {
   }
 
   /// Clears the current selection.
-  void clearSelection() { 
+  void clearSelection() {}
+}
+
+String? defaultInputHandler(dynamic data) {
+  return null;
+}
+
+/// TerminalInputHandler contains the logic for translating a [TerminalKeyboardEvent]
+/// into escape sequences that can be recognized by the terminal.
+abstract class TerminalInputHandler {
+  /// Translates a [TerminalKeyboardEvent] into an escape sequence. If the event
+  /// cannot be translated, null is returned.
+  String? call(TerminalKeyboardEvent event) {
+    return null;
   }
 }
 
@@ -70,10 +83,7 @@ class Terminal {
 
   Buffer get buffer => Buffer();
 
-  void paste(String text) {
-    
-  }
-
+  void paste(String text) {}
 
   /// Function that is called when the dimensions of the terminal change.
   void Function(int width, int height, int pixelWidth, int pixelHeight)? onResize;
@@ -248,13 +258,42 @@ class TerminalTheme {
 }
 
 class Buffer {
-  
   /// Get the plain text content of the buffer including the scrollback.
   /// Accepts an optional [range] to get a specific part of the buffer.
   String getText([BufferRange? range]) {
     return "";
   }
+}
 
+/// The key event received from the keyboard, along with the state of the
+/// modifier keys and state of the terminal. Typically consumed by the
+/// [TerminalInputHandler] to produce a escape sequence that can be recognized
+/// by the terminal.
+///
+/// See also:
+/// - [TerminalInputHandler]
+class TerminalKeyboardEvent {
+  final TerminalKey key = TerminalKey.abort;
+
+  final bool shift = false;
+
+  final bool ctrl = false;
+
+  final bool alt = false;
+
+  final bool altBuffer = false;
+
+  TerminalKeyboardEvent copyWith({
+    TerminalKey? key,
+    bool? shift,
+    bool? ctrl,
+    bool? alt,
+    dynamic state,
+    bool? altBuffer,
+    dynamic platform,
+  }) {
+    return TerminalKeyboardEvent();
+  }
 }
 
 enum TerminalKey {
