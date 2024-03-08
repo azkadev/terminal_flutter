@@ -2,9 +2,81 @@ import 'package:flutter/material.dart';
 
 class TerminalController {
   TerminalController();
+  BufferRange? get selection {
+    return null;
+  }
+
+  /// Clears the current selection.
+  void clearSelection() { 
+  }
+}
+
+abstract class BufferRange {
+  final dynamic begin;
+
+  final dynamic end;
+
+  const BufferRange(this.begin, this.end);
+
+  BufferRange.collapsed(this.begin) : end = begin;
+
+  bool get isNormalized {
+    return begin.isBefore(end) || begin.isEqual(end);
+  }
+
+  bool get isCollapsed {
+    return begin.isEqual(end);
+  }
+
+  BufferRange get normalized;
+
+  /// Convert this range to segments of single lines.
+  Iterable<dynamic> toSegments();
+
+  /// Returns true if the given[position] is within this range.
+  bool contains(dynamic position);
+
+  /// Returns the smallest range that contains both this range and the given
+  /// [range].
+  BufferRange merge(BufferRange range);
+
+  /// Returns the smallest range that contains both this range and the given
+  /// [position].
+  BufferRange extend(dynamic position);
+
+  @override
+  operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+
+    if (other is! BufferRange) {
+      return false;
+    }
+
+    return begin == other.begin && end == other.end;
+  }
+
+  @override
+  int get hashCode => begin.hashCode ^ end.hashCode;
+
+  @override
+  String toString() => 'Range($begin, $end)';
 }
 
 class Terminal {
+  void Function(String data)? onOutput;
+  void Function(String title)? onTitleChange;
+
+  Buffer get buffer => Buffer();
+
+  void paste(String text) {
+    
+  }
+
+
+  /// Function that is called when the dimensions of the terminal change.
+  void Function(int width, int height, int pixelWidth, int pixelHeight)? onResize;
   Terminal({
     maxLines,
     inputHandler,
@@ -20,6 +92,8 @@ class Terminal {
   int get viewHeight {
     return 0;
   }
+
+  void write(String data) {}
 }
 
 class TerminalView extends StatefulWidget {
@@ -61,6 +135,126 @@ class _TerminalViewState extends State<TerminalView> {
   Widget build(BuildContext context) {
     return const SizedBox.shrink();
   }
+}
+
+class TerminalThemes {
+  static const defaultTheme = TerminalTheme(
+    cursor: Color(0XAAAEAFAD),
+    selection: Color(0XAAAEAFAD),
+    foreground: Color(0XFFCCCCCC),
+    background: Color(0XFF1E1E1E),
+    black: Color(0XFF000000),
+    red: Color(0XFFCD3131),
+    green: Color(0XFF0DBC79),
+    yellow: Color(0XFFE5E510),
+    blue: Color(0XFF2472C8),
+    magenta: Color(0XFFBC3FBC),
+    cyan: Color(0XFF11A8CD),
+    white: Color(0XFFE5E5E5),
+    brightBlack: Color(0XFF666666),
+    brightRed: Color(0XFFF14C4C),
+    brightGreen: Color(0XFF23D18B),
+    brightYellow: Color(0XFFF5F543),
+    brightBlue: Color(0XFF3B8EEA),
+    brightMagenta: Color(0XFFD670D6),
+    brightCyan: Color(0XFF29B8DB),
+    brightWhite: Color(0XFFFFFFFF),
+    searchHitBackground: Color(0XFFFFFF2B),
+    searchHitBackgroundCurrent: Color(0XFF31FF26),
+    searchHitForeground: Color(0XFF000000),
+  );
+
+  static const whiteOnBlack = TerminalTheme(
+    cursor: Color(0XFFAEAFAD),
+    selection: Color(0XFFAEAFAD),
+    foreground: Color(0XFFFFFFFF),
+    background: Color(0XFF000000),
+    black: Color(0XFF000000),
+    red: Color(0XFFCD3131),
+    green: Color(0XFF0DBC79),
+    yellow: Color(0XFFE5E510),
+    blue: Color(0XFF2472C8),
+    magenta: Color(0XFFBC3FBC),
+    cyan: Color(0XFF11A8CD),
+    white: Color(0XFFE5E5E5),
+    brightBlack: Color(0XFF666666),
+    brightRed: Color(0XFFF14C4C),
+    brightGreen: Color(0XFF23D18B),
+    brightYellow: Color(0XFFF5F543),
+    brightBlue: Color(0XFF3B8EEA),
+    brightMagenta: Color(0XFFD670D6),
+    brightCyan: Color(0XFF29B8DB),
+    brightWhite: Color(0XFFFFFFFF),
+    searchHitBackground: Color(0XFFFFFF2B),
+    searchHitBackgroundCurrent: Color(0XFF31FF26),
+    searchHitForeground: Color(0XFF000000),
+  );
+}
+
+class TerminalTheme {
+  const TerminalTheme({
+    required this.cursor,
+    required this.selection,
+    required this.foreground,
+    required this.background,
+    required this.black,
+    required this.white,
+    required this.red,
+    required this.green,
+    required this.yellow,
+    required this.blue,
+    required this.magenta,
+    required this.cyan,
+    required this.brightBlack,
+    required this.brightRed,
+    required this.brightGreen,
+    required this.brightYellow,
+    required this.brightBlue,
+    required this.brightMagenta,
+    required this.brightCyan,
+    required this.brightWhite,
+    required this.searchHitBackground,
+    required this.searchHitBackgroundCurrent,
+    required this.searchHitForeground,
+  });
+
+  final Color cursor;
+  final Color selection;
+
+  final Color foreground;
+  final Color background;
+
+  final Color black;
+  final Color red;
+  final Color green;
+  final Color yellow;
+  final Color blue;
+  final Color magenta;
+  final Color cyan;
+  final Color white;
+
+  final Color brightBlack;
+  final Color brightRed;
+  final Color brightGreen;
+  final Color brightYellow;
+  final Color brightBlue;
+  final Color brightMagenta;
+  final Color brightCyan;
+  final Color brightWhite;
+
+  final Color searchHitBackground;
+  final Color searchHitBackgroundCurrent;
+  final Color searchHitForeground;
+}
+
+class Buffer {
+  
+  /// Get the plain text content of the buffer including the scrollback.
+  /// Accepts an optional [range] to get a specific part of the buffer.
+  String getText([BufferRange? range]) {
+    return "";
+  }
+
 }
 
 enum TerminalKey {

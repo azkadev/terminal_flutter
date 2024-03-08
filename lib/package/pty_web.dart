@@ -11,4 +11,13 @@ class Pty {
   Future<int> get exitCode async {
     return 0;
   }
+  /// Resize the pseudo-terminal.
+  void resize(int rows, int cols) {
+    
+  }
+  /// Write data to the pseudo-terminal.
+  void write(Uint8List data) {
+    
+  }
+
 }
