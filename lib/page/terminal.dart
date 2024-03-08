@@ -2,7 +2,6 @@
 
 import 'dart:async';
 
-
 import 'package:archive/archive_io.dart';
 
 import 'package:flutter/material.dart';
@@ -21,10 +20,8 @@ import "package:path/path.dart" as path;
 import 'package:universal_io/io.dart';
 
 class TerminalPage extends StatefulWidget {
-  final bool isHideWindowControll;
   const TerminalPage({
     super.key,
-    this.isHideWindowControll = false,
   });
 
   @override
@@ -75,20 +72,17 @@ class TerminalPageState extends State<TerminalPage> {
         ),
       );
 
-      setState(() {
-        is_init_client = true;
-      });
-      text_command_first.split("\n").forEach((element) {
-        writeLn(element);
-      });
-
-      terminal.keyInput(TerminalKey.enter);
-
       await extractBootStrap(
         directory: directory,
       );
-      // terminal.buffer.clear();
-      // terminal.buffer.setCursor(0, 0);
+
+      setState(() {
+        is_init_client = true;
+      });
+      
+      terminal.textInput("clear");
+      terminal.keyInput(TerminalKey.enter);
+      
       await general_library.permission.auto_request(
         permissionTypes: {
           PermissionType.accessMediaLocation,
@@ -109,6 +103,8 @@ class TerminalPageState extends State<TerminalPage> {
       await general_library.app_background.enable_background;
     });
   }
+
+  addCommand() {}
 
   Future<void> extractBootStrap({
     required Directory directory,
@@ -457,6 +453,14 @@ Report issues at https://github.com/azkadev/terminal_flutter
   List<List<TerminalVirtualWidget>> get terminalVirtualWidgets {
     return [
       [
+        TerminalVirtualWidget(
+          child: const Text("Tab"),
+          onTap: (context, TerminalFlutter terminalFlutter) {
+            setState(() {
+              terminalFlutter.terminal.keyInput(TerminalKey.tab);
+            });
+          },
+        ),
         TerminalVirtualWidget(
           child: const Icon(Icons.add),
           onTap: (context, TerminalFlutter terminalFlutter) {
