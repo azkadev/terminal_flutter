@@ -7,15 +7,16 @@ import 'package:archive/archive_io.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_pty/flutter_pty.dart';
+// import 'package:flutter_pty/flutter_pty.dart';
 import 'package:general_flutter/general_flutter.dart';
 import 'package:general_lib/general_lib.dart';
 import 'package:general_lib_flutter/general_lib_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:terminal_flutter/core/terminal_client.dart';
+import 'package:terminal_flutter/package/package.dart';
 import 'package:terminal_flutter/page/core.dart';
 import 'package:terminal_flutter/page/terminal_flutter.dart';
-import 'package:xterm/xterm.dart';
+
 import "package:path/path.dart" as path;
 
 class TerminalPage extends StatefulWidget {
@@ -52,7 +53,7 @@ class TerminalPageState extends State<TerminalPage> {
     Future(() async {
       Directory directory = await getAppDir();
       _initVirtKeys();
-      
+
       Terminal terminal = Terminal(
         maxLines: 10000,
         inputHandler: virtKeyProvider,
@@ -385,7 +386,6 @@ Report issues at https://github.com/azkadev/terminal_flutter
       child: Builder(
         // valueListenable: valueNotifier,
         builder: (context) {
-          
           List<Widget> children = terminalVirtualWidgets.map(
             (e) {
               return Row(

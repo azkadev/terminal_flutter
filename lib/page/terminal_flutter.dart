@@ -2,9 +2,8 @@
 
 import 'dart:convert';
 
-import 'package:flutter_pty/flutter_pty.dart';
+import 'package:terminal_flutter/package/package.dart';
 
-import 'package:xterm/xterm.dart';
 
 class TerminalFlutter {
   late Pty pty;
@@ -61,21 +60,18 @@ class TerminalFlutter {
     ));
   }
 
-
   void scaleDown() {
     double res = textScaleFactor - 0.2;
     if (res < 0.1) {
       return;
     }
- 
-      textScaleFactor = res;
-    
+
+    textScaleFactor = res;
   }
 
   void scaleUp() {
     // setState(() {
-      textScaleFactor = (textScaleFactor + 0.2);
+    textScaleFactor = (textScaleFactor + 0.2);
     // });
   }
-
 }

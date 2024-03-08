@@ -1,6 +1,6 @@
 {
-    "name": "terminal",
-    "short_name": "terminal",
+    "name": "terminal_flutter",
+    "short_name": "terminal_flutter",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
