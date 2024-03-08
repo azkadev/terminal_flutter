@@ -34,6 +34,6 @@ New update 2024
 ![](screenshots/new_2.png)
 
 Old
-![](https://raw.githubusercontent.com/azkadev/terminal_flutter/main/screenshots/desktop.png)
-![](https://raw.githubusercontent.com/azkadev/terminal_flutter/main/screenshots/desktop_2.png)
-![](https://raw.githubusercontent.com/azkadev/terminal_flutter/main/screenshots/mobile.png)
+![](screenshots/desktop.png)
+![](screenshots/desktop_2.png)
+![](screenshots/mobile.png)
