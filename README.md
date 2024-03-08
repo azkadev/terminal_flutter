@@ -1,6 +1,6 @@
 # Terminal Flutter
 
-Terminal Flutter app dan library support all platform
+Terminal Flutter Untuk menambahkan fitur terminal pada flutter app 
 
 ![](https://raw.githubusercontent.com/azkadev/terminal_flutter/mainscreenshots/terminal.png)
 
@@ -10,7 +10,13 @@ Terminal Flutter app dan library support all platform
 3. [x] Custom environment like termux (jika anda tahu chroot / sejenis itu tolong kasih saya petunjuk ya)
 4. [x] Plugable Library now you can add terminal in your app
 
-5. Install Package
+## Linux Distro on Android / Proot / 
+
+1. [Alpine Linux](https://github.com/feelfreelinux/android-linux-bootstrap) TESTED WORK 100%
+2. [Ubuntu Linux]()
+3. [Debian Linux]()
+
+## Install Package
 
 ```bash
 dart pub add terminal_flutter
