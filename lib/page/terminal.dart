@@ -506,8 +506,9 @@ Report issues at https://github.com/azkadev/terminal_flutter
         TerminalVirtualWidget(
           child: const Text("CTRL"),
           onTap: (context, TerminalFlutter terminalFlutter) {
-            const Icon(Icons.arrow_upward);
-            terminalFlutter.terminal.keyInput(TerminalKey.arrowUp);
+            setState(() {
+              virtKeyProvider.ctrl = !virtKeyProvider.ctrl;
+            });
           },
         ),
         TerminalVirtualWidget(
