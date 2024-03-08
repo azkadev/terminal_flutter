@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   awesome_notifications
+  media_kit_video
   sim_card_info
   url_launcher_linux
 )

@@ -4,8 +4,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:archive/archive_io.dart';
+import 'package:explorer/explorer.dart';
+import 'package:explorer/explorer_io.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:general_flutter/general_flutter.dart';
 import 'package:general_lib/general_lib.dart';
 import 'package:general_lib_flutter/general_lib_flutter.dart';
 import 'package:iconsax/iconsax.dart';
@@ -33,6 +36,9 @@ class TerminalPage extends StatefulWidget {
 class TerminalPageState extends State<TerminalPage> {
   List<TerminalClient> terminalClients = [];
   bool is_init_client = false;
+  GeneralFlutter general_library = GeneralFlutter();
+  late ExplorerController explorerController;
+
   @override
   void initState() {
     super.initState();
@@ -44,6 +50,13 @@ class TerminalPageState extends State<TerminalPage> {
   void task() {
     Future(() async {
       Directory directory = await getAppDir();
+
+      explorerController = ExplorerController(
+        provider: IoExplorerProvider(
+          entryPath: directory.path, // For IO explorer pass some entry path
+        ),
+      );
+
       terminalClients = [
         TerminalClient(
           title: "Helo",
@@ -63,6 +76,21 @@ class TerminalPageState extends State<TerminalPage> {
       await extractBootStrap(
         directory: directory,
       );
+      await general_library.permission.auto_request(
+        permissionTypes: {
+          PermissionType.accessMediaLocation,
+          PermissionType.mediaLibrary,
+          PermissionType.storage,
+          PermissionType.manageExternalStorage,
+          PermissionType.backgroundRefresh,
+          // PermissionType.accessNotificationPolicy,
+          PermissionType.notification,
+          PermissionType.ignoreBatteryOptimizations,
+        }.toList(),
+      );
+      await general_library.app_background.has_permissions;
+      await general_library.app_background.initialize(notificationTitle: "App Terminal", notificationMessage: "Terminal Background");
+      await general_library.app_background.enable_background;
     });
   }
 
@@ -71,6 +99,12 @@ class TerminalPageState extends State<TerminalPage> {
   }) async {
     ByteData boot_strap = await rootBundle.load("assets/bootstrap/alpine-aarch64.zip");
     Archive archive = ZipDecoder().decodeBytes(boot_strap.buffer.asUint64List());
+    Directory directory_home = Directory(path.join(directory.path, "home"));
+    if (directory_home.existsSync() == false) {
+      await directory_home.create(
+        recursive: true,
+      );
+    }
     Directory directory_boot_strap = Directory(path.join(directory.path, "linux"));
     if (dart.isAndroid) {
       addCommand(executable: "su", args: []);
@@ -81,15 +115,6 @@ class TerminalPageState extends State<TerminalPage> {
         archive,
         directory_boot_strap.path,
       );
-
-      if (dart.isAndroid) {
-        // getTerminalNow.pty.write(utf8.encode("cd ${directory_boot_strap.path}\n"));
-
-        // if (dart.isAndroid) {
-        //   getTerminalNow.pty.write(utf8.encode("chmod -R 777 ${directory_boot_strap.path}\n"));
-        //   getTerminalNow.pty.write(utf8.encode("chmod -R +rx ${directory_boot_strap.path}\n"));
-        // }
-      }
     }
 
     addCommand(executable: "cd", args: [
@@ -120,6 +145,15 @@ class TerminalPageState extends State<TerminalPage> {
       );
     }
 
+    // addCommand(
+    //   executable: "mount",
+    //   args: [
+    //     //  --bind /path/asal /bootstrap/target_directory
+    //     "--bind",
+    //     directory_home.path,
+    //     directory_bootstrap_linux.path,
+    //   ],
+    // );
     addCommand(
       executable: "./run-bootstrap.sh",
       args: [
@@ -239,7 +273,31 @@ Report issues at https://github.com/azkadev/terminal_flutter
                     removeRight: true,
                     child: Builder(
                       builder: (context) {
+                      //   bool is_explorer = false;
+                      //   if (is_explorer) {
+                      //     return Explorer(
+                      //       controller: explorerController,
+
+                      //       // Customize UI by Explorer & you own widgets!
+                      //       builder: (_) => [
+                      //         const ExplorerToolbar(),
+                      //         const ExplorerActionView(),
+                      //         const ExplorerFilesGridView(),
+                      //       ],
+                      //       // Callback called on file at explorer pressed
+                      //       filePressed: (file) {
+                      //         if ((file.size ?? 0) > 200000) {
+                      //           final snackBar = const SnackBar(content: Text('Can\'t open files with size > 200kb'));
+
+                      //           // Find the Scaffold in the widget tree and use it to show a SnackBar.
+                      //           ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      //           return;
+                      //         }
+                      //       },
+                      //     );
+                      //   }
                         TerminalClient terminal = getTerminalNow;
+
                         return TerminalView(
                           terminal.terminal,
                           theme: TerminalThemes.defaultTheme,
