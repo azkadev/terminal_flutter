@@ -386,31 +386,10 @@ Report issues at https://github.com/azkadev/terminal_flutter
       decoration: const BoxDecoration(
         color: Colors.black,
       ),
-      child: ValueListenableBuilder(
-        valueListenable: valueNotifier,
-        builder: (context, value, child) {
-          // List<Widget> children = [
-          //   Row(
-          //     children: [
-          //       Padding(
-          //         padding: const EdgeInsets.all(5),
-          //         child: TextButton(
-          //           onPressed: () {
-          //             handleTap(
-          //               handleFunction: (context) {
-          //                 virtKeyProvider.ctrl;
-          //               },
-          //             );
-          //           },
-          //           child: const Text(
-          //             "Paste",
-          //           ),
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ];
-          // terminal
+      child: Builder(
+        // valueListenable: valueNotifier,
+        builder: (context) {
+          
           List<Widget> children = terminalVirtualWidgets.map(
             (e) {
               return Row(

@@ -6,9 +6,9 @@ Terminal Flutter Untuk menambahkan fitur terminal pada flutter app
 
 ## Features
 1. [x] Multi shell
-2. [x] Cross platform Support (Android, iOS, Linux, macOS, Windows)
-3. [x] Custom environment like termux (jika anda tahu chroot / sejenis itu tolong kasih saya petunjuk ya)
-4. [x] Plugable Library now you can add terminal in your app
+2. [x] Bisa Berbagai Platform (Android, iOS, Linux, macOS, Windows)
+3. [x] Kustom environment Seperti Termux
+4. [x] Library yang gampang sehingga kamu bisa menambahkan fitur ini dengan cepat
 
 ## Linux Distro on Android / Proot / 
 
