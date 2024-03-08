@@ -1,40 +1,37 @@
-
 import 'package:flutter/material.dart';
 import 'package:xterm/core.dart';
- 
 
 enum VirtKey {
- 
   esc,
-  
+
   alt,
-  
+
   home,
-  
+
   up,
-  
+
   end,
-  
+
   sftp,
-  
+
   snippet,
-  
+
   tab,
-  
+
   ctrl,
-  
+
   left,
-  
+
   down,
-  
+
   right,
-  
+
   clipboard,
-  
+
   ime,
-  
+
   pgup,
-  
+
   pgdn;
 
   String get text {

@@ -20,7 +20,7 @@ class TerminalFlutterApp extends StatelessWidget {
     return GeneralLibFlutterAppMain(
       theme_notifier: theme_notifier,
       builder: (themeMode, lightTheme, darkTheme, widget) {
-        return  MaterialApp(
+        return MaterialApp(
           debugShowCheckedModeBanner: false,
           themeMode: themeMode,
           theme: lightTheme,
