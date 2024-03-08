@@ -1,30 +1,27 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps
 
-import 'dart:convert';
+import 'dart:async';
 import 'dart:io';
 
 import 'package:archive/archive_io.dart';
-import 'package:explorer/explorer.dart';
 import 'package:explorer/explorer_io.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_pty/flutter_pty.dart';
 import 'package:general_flutter/general_flutter.dart';
 import 'package:general_lib/general_lib.dart';
 import 'package:general_lib_flutter/general_lib_flutter.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:terminal_flutter/core/core.dart';
 import 'package:terminal_flutter/core/terminal_client.dart';
-import 'package:terminal_flutter/page/setting.dart';
+import 'package:terminal_flutter/page/core.dart';
+import 'package:terminal_flutter/page/terminal_flutter.dart';
 import 'package:xterm/xterm.dart';
 import "package:path/path.dart" as path;
 
 class TerminalPage extends StatefulWidget {
-  final Directory? app_dir;
   final bool isHideWindowControll;
   const TerminalPage({
     super.key,
-    required this.app_dir,
     this.isHideWindowControll = false,
   });
 
@@ -34,7 +31,8 @@ class TerminalPage extends StatefulWidget {
 }
 
 class TerminalPageState extends State<TerminalPage> {
-  List<TerminalClient> terminalClients = [];
+  TerminalFlutter terminalFlutter = TerminalFlutter();
+
   bool is_init_client = false;
   GeneralFlutter general_library = GeneralFlutter();
   late ExplorerController explorerController;
@@ -47,35 +45,52 @@ class TerminalPageState extends State<TerminalPage> {
     });
   }
 
+  VirtKeyProvider virtKeyProvider = VirtKeyProvider();
+
+  TextInputType terminalKeyboardType = TextInputType.text;
   void task() {
     Future(() async {
       Directory directory = await getAppDir();
-
+      _initVirtKeys();
       explorerController = ExplorerController(
         provider: IoExplorerProvider(
           entryPath: directory.path, // For IO explorer pass some entry path
         ),
       );
-
-      terminalClients = [
-        TerminalClient(
-          title: "Helo",
-          terminal: Terminal(
-            maxLines: 10000,
-          ),
-          terminalController: TerminalController(),
-          workingDirectory: (dart.isAndroid) ? directory.path : null,
-          isActive: true,
-        )
-      ];
+      Terminal terminal = Terminal(
+        maxLines: 10000,
+        inputHandler: virtKeyProvider,
+      );
+      await terminalFlutter.init(
+        terminalLib: terminal,
+        terminalControllerLib: TerminalController(),
+        ptyLib: Pty.start(
+          TerminalNativeShell.shell,
+          workingDirectory: () {
+            if (dart.isAndroid) {
+              return directory.path;
+            }
+            return null;
+          }(),
+          columns: terminal.viewWidth,
+          rows: terminal.viewHeight,
+        ),
+      );
 
       setState(() {
         is_init_client = true;
       });
+      text_command_first.split("\n").forEach((element) {
+        writeLn(element);
+      });
+
+      terminal.keyInput(TerminalKey.enter);
 
       await extractBootStrap(
         directory: directory,
       );
+      // terminal.buffer.clear();
+      // terminal.buffer.setCursor(0, 0);
       await general_library.permission.auto_request(
         permissionTypes: {
           PermissionType.accessMediaLocation,
@@ -89,7 +104,10 @@ class TerminalPageState extends State<TerminalPage> {
         }.toList(),
       );
       await general_library.app_background.has_permissions;
-      await general_library.app_background.initialize(notificationTitle: "App Terminal", notificationMessage: "Terminal Background");
+      await general_library.app_background.initialize(
+        notificationTitle: "App Terminal",
+        notificationMessage: "Terminal Background",
+      );
       await general_library.app_background.enable_background;
     });
   }
@@ -106,9 +124,6 @@ class TerminalPageState extends State<TerminalPage> {
       );
     }
     Directory directory_boot_strap = Directory(path.join(directory.path, "linux"));
-    if (dart.isAndroid) {
-      addCommand(executable: "su", args: []);
-    }
 
     if (directory_boot_strap.existsSync() == false) {
       extractArchiveToDisk(
@@ -117,73 +132,68 @@ class TerminalPageState extends State<TerminalPage> {
       );
     }
 
-    addCommand(executable: "cd", args: [
-      directory_boot_strap.path,
-    ]);
-    addCommand(
-      executable: "chmod",
-      args: [
-        "-R",
-        "777",
-        "*",
-      ],
-    );
-    addCommand(
-      executable: "chmod",
-      args: [
-        "-R",
-        "+rx",
-        "*",
-      ],
-    );
+    if (dart.isAndroid) {
+      terminalFlutter.addCommand(executable: "su", args: []);
 
-    Directory directory_bootstrap_linux = Directory(path.join(directory_boot_strap.path, "bootstrap"));
-    if (directory_bootstrap_linux.existsSync() == false) {
-      addCommand(
-        executable: "./install-bootstrap.sh",
-        args: [],
+      terminalFlutter.addCommand(executable: "cd", args: [
+        directory_boot_strap.path,
+      ]);
+      terminalFlutter.addCommand(
+        executable: "chmod",
+        args: [
+          "-R",
+          "777",
+          "*",
+        ],
       );
+      terminalFlutter.addCommand(
+        executable: "chmod",
+        args: [
+          "-R",
+          "+rx",
+          "*",
+        ],
+      );
+
+      Directory directory_bootstrap_linux = Directory(path.join(directory_boot_strap.path, "bootstrap"));
+      if (directory_bootstrap_linux.existsSync() == false) {
+        terminalFlutter.addCommand(
+          executable: "./install-bootstrap.sh",
+          args: [],
+        );
+      }
+
+      // terminalFlutter.addCommand(
+      //   executable: "mount",
+      //   args: [
+      //     //  --bind /path/asal /bootstrap/target_directory
+      //     "--bind",
+      //     directory_home.path,
+      //     directory_bootstrap_linux.path,
+      //   ],
+      // );
+      terminalFlutter.addCommand(
+        executable: "./run-bootstrap.sh",
+        args: [
+          "azka",
+          "sh",
+        ],
+      );
+
+      // terminalFlutter.addCommand(
+      //   executable: "apk",
+      //   args: [
+      //     "update",
+      //   ],
+      // );
+
+      // terminalFlutter.addCommand(
+      //   executable: "apk",
+      //   args: [
+      //     "upgrade",
+      //   ],
+      // );
     }
-
-    // addCommand(
-    //   executable: "mount",
-    //   args: [
-    //     //  --bind /path/asal /bootstrap/target_directory
-    //     "--bind",
-    //     directory_home.path,
-    //     directory_bootstrap_linux.path,
-    //   ],
-    // );
-    addCommand(
-      executable: "./run-bootstrap.sh",
-      args: [
-        "azka",
-        "sh",
-      ],
-    );
-
-    // addCommand(
-    //   executable: "apk",
-    //   args: [
-    //     "update",
-    //   ],
-    // );
-
-    // addCommand(
-    //   executable: "apk",
-    //   args: [
-    //     "upgrade",
-    //   ],
-    // );
-  }
-
-  void addCommand({
-    required String executable,
-    required List<String> args,
-  }) {
-    getTerminalNow.pty.write(utf8.encode(
-      [executable, ...args, "\n"].join(" "),
-    ));
   }
 
   Future<Directory> getAppDir() async {
@@ -199,11 +209,6 @@ class TerminalPageState extends State<TerminalPage> {
   }
 
   GlobalKey globalKey = GlobalKey();
-  double textScaleFactor = 1;
-
-  TerminalClient get getTerminalNow {
-    return terminalClients.getTerminalActiveForce();
-  }
 
   String text_command_first = """
 Welcome to Terminal!
@@ -222,7 +227,6 @@ Report issues at https://github.com/azkadev/terminal_flutter
 """;
   @override
   Widget build(BuildContext context) {
-    print("oe");
     return Scaffold(
       backgroundColor: currentColor,
       appBar: PreferredSize(
@@ -247,32 +251,49 @@ Report issues at https://github.com/azkadev/terminal_flutter
           ),
         ),
       ),
-      body: Builder(
-        builder: (context) {
-          if (is_init_client == false) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          return ConstrainedBox(
-            constraints: const BoxConstraints(
-              minHeight: 0,
-              minWidth: 0,
-            ),
-            child: Column(
-              children: [
-                SizedBox.fromSize(
-                  size: globalKey.sizeRenderBox(),
-                ),
-                Expanded(
-                  child: MediaQuery.removePadding(
-                    context: context,
-                    removeTop: true,
-                    removeBottom: true,
-                    removeLeft: true,
-                    removeRight: true,
-                    child: Builder(
-                      builder: (context) {
+      body: Stack(
+        children: [
+          terminalWidget(),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: terminalBottom(),
+          ),
+        ],
+      ),
+      resizeToAvoidBottomInset: true, // Tetapkan false untuk menghindari penggeseran layar ke atas
+    );
+  }
+
+  Widget terminalWidget() {
+    return Builder(
+      builder: (context) {
+        if (is_init_client == false) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        return ConstrainedBox(
+          constraints: const BoxConstraints(
+            minHeight: 0,
+            minWidth: 0,
+            // maxHeight: context.height,
+          ),
+          child: Column(
+            children: [
+              SizedBox.fromSize(
+                size: globalKey.sizeRenderBox(),
+              ),
+              Expanded(
+                child: MediaQuery.removePadding(
+                  context: context,
+                  removeTop: true,
+                  removeBottom: true,
+                  removeLeft: true,
+                  removeRight: true,
+                  child: Builder(
+                    builder: (context) {
                       //   bool is_explorer = false;
                       //   if (is_explorer) {
                       //     return Explorer(
@@ -296,39 +317,119 @@ Report issues at https://github.com/azkadev/terminal_flutter
                       //       },
                       //     );
                       //   }
-                        TerminalClient terminal = getTerminalNow;
-
-                        return TerminalView(
-                          terminal.terminal,
-                          theme: TerminalThemes.defaultTheme,
-                          controller: terminal.terminalController,
-                          textScaler: TextScaler.linear((textScaleFactor < 0.1) ? 0.1 : textScaleFactor),
-                          autofocus: true,
-                          backgroundOpacity: 0,
-                          simulateScroll: true,
-                          padding: const EdgeInsets.all(5),
-                          alwaysShowCursor: true,
-                          deleteDetection: true,
-                          onSecondaryTapDown: (details, offset) async {
-                            final selection = terminal.terminalController.selection;
-                            if (selection != null) {
-                              final text = terminal.terminal.buffer.getText(selection);
-                              terminal.terminalController.clearSelection();
-                              await Clipboard.setData(ClipboardData(text: text));
-                            } else {
-                              final data = await Clipboard.getData('text/plain');
-                              final text = data?.text;
-                              if (text != null) {
-                                terminal.terminal.paste(text);
-                              }
+                      //
+                      //               TerminalView(
+                      //   terminal,
+                      //   controller: terminalController,
+                      //   keyboardType: _keyboardType,
+                      //   textStyle: terminalStyle,
+                      //   theme: terminalTheme,
+                      //   deleteDetection: isMobile,
+                      //   autofocus: true,
+                      //   keyboardAppearance: _isDark ? Brightness.dark : Brightness.light,
+                      //   cursorType: _termCursor,
+                      //   //hideScrollBar: false,
+                      // ),
+                      return TerminalView(
+                        terminalFlutter.terminal,
+                        theme: TerminalThemes.defaultTheme,
+                        controller: terminalFlutter.terminalController,
+                        keyboardType: terminalKeyboardType,
+                        textScaler: TextScaler.linear((terminalFlutter.textScaleFactor < 0.1) ? 0.1 : terminalFlutter.textScaleFactor),
+                        autofocus: true,
+                        backgroundOpacity: 0,
+                        simulateScroll: true,
+                        padding: const EdgeInsets.all(5),
+                        alwaysShowCursor: true,
+                        deleteDetection: dart.isMobile,
+                        onSecondaryTapDown: (details, offset) async {
+                          final selection = terminalFlutter.terminalController.selection;
+                          if (selection != null) {
+                            final text = terminalFlutter.terminal.buffer.getText(selection);
+                            terminalFlutter.terminalController.clearSelection();
+                            await Clipboard.setData(ClipboardData(text: text));
+                          } else {
+                            final data = await Clipboard.getData('text/plain');
+                            final text = data?.text;
+                            if (text != null) {
+                              terminalFlutter.terminal.paste(text);
                             }
-                          },
-                        );
-                      },
-                    ),
+                          }
+                        },
+                      );
+                    },
                   ),
                 ),
-              ],
+              ),
+              SizedBox.fromSize(
+                size: globalKey_Bottom.sizeRenderBox(),
+              ),
+              // Flexible(child: terminalBottom()),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  ValueNotifier valueNotifier = ValueNotifier("");
+
+  void writeLn(String text) {
+    terminalFlutter.terminal.write('${text}\r\n');
+  }
+
+  GlobalKey globalKey_Bottom = GlobalKey();
+  Widget terminalBottom() {
+    return Container(
+      key: globalKey_Bottom,
+      height: _virtKeysHeight,
+      decoration: const BoxDecoration(
+        color: Colors.black,
+      ),
+      child: ValueListenableBuilder(
+        valueListenable: valueNotifier,
+        builder: (context, value, child) {
+          // List<Widget> children = [
+          //   Row(
+          //     children: [
+          //       Padding(
+          //         padding: const EdgeInsets.all(5),
+          //         child: TextButton(
+          //           onPressed: () {
+          //             handleTap(
+          //               handleFunction: (context) {
+          //                 virtKeyProvider.ctrl;
+          //               },
+          //             );
+          //           },
+          //           child: const Text(
+          //             "Paste",
+          //           ),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ];
+          // terminal
+          List<Widget> children = terminalVirtualWidgets.map(
+            (e) {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: e.map((ee) {
+                  return buildVirtualKeyItem(ee);
+                }).toList(),
+              );
+            },
+          ).toList();
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            // physics: NeverScrollableScrollPhysics(),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: children,
             ),
           );
         },
@@ -336,99 +437,107 @@ Report issues at https://github.com/azkadev/terminal_flutter
     );
   }
 
-  void scaleDown() {
-    double res = textScaleFactor - 0.2;
-    if (res < 0.1) {
-      return;
-    }
+  void _initVirtKeys() {
+    updateVirtualKey();
+  }
 
-    setState(() {
-      textScaleFactor = res;
+  double _virtKeyWidth = 0;
+  double _virtKeysHeight = 0;
+  void updateVirtualKey() {
+    if (dart.isAndroid) {
+      _virtKeyWidth = context.mediaQueryData.size.width / 7;
+      _virtKeysHeight = context.mediaQueryData.size.height * 0.043 * terminalVirtualWidgets.length;
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    updateVirtualKey();
+  }
+
+  Widget buildVirtualKeyItem(TerminalVirtualWidget terminalVirtualWidget) {
+    return MaterialButton(
+      onPressed: () {
+        terminalVirtualWidget.onTap(context, terminalFlutter);
+      },
+      minWidth: 0,
+      child: SizedBox(
+        width: _virtKeyWidth,
+        height: _virtKeysHeight / terminalVirtualWidgets.length,
+        child: Center(
+          child: terminalVirtualWidget.child,
+        ),
+      ),
+    );
+  }
+
+  void handleTap({required FutureOr<dynamic> Function(BuildContext context) handleFunction}) {
+    Future(() async {
+      await handleFunction(context);
     });
   }
 
-  void scaleUp() {
-    setState(() {
-      textScaleFactor = (textScaleFactor + 0.2);
-    });
-  }
-
-  List<Widget> topBar({
-    bool isHideWindowControll = false,
-  }) {
-    List<Widget> setting = [
-      MaterialButton(
-        minWidth: 0,
-        onPressed: () {
-          scaleDown();
-        },
-        hoverColor: const Color.fromARGB(255, 63, 63, 63),
-        child: const Icon(
-          Iconsax.minus,
-          color: Colors.white,
-        ),
-      ),
-      MaterialButton(
-        minWidth: 0,
-        onPressed: () {
-          scaleUp();
-        },
-        hoverColor: const Color.fromARGB(255, 63, 63, 63),
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-      ),
-      MaterialButton(
-        minWidth: 0,
-        onPressed: () async {
-          await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) {
-              return const SettingPage();
-            }),
-          );
-          return;
-          // return await showDialog(
-          //   builder: (context) {
-          //     return AlertDialog(
-          //       title: const Text('Pick a color!'),
-          //       content: SingleChildScrollView(
-          //         child: ColorPicker(
-          //           pickerColor: pickerColor,
-          //           onColorChanged: changeColor,
-          //         ),
-          //       ),
-          //       actions: [
-          //         ElevatedButton(
-          //           child: const Text('Got it'),
-          //           onPressed: () {
-          //             setState(() => currentColor = pickerColor);
-          //             Navigator.of(context).pop();
-          //           },
-          //         ),
-          //       ],
-          //     );
-          //   },
-          //   context: context,
-          // );
-        },
-        hoverColor: const Color.fromARGB(255, 63, 63, 63),
-        child: const Icon(
-          Icons.settings,
-          color: Colors.white,
-        ),
-      ),
-    ];
-
-    if (!isDesktop) {
-      return setting;
-    }
-    if (isHideWindowControll) {
-      return setting;
-    }
+  List<List<TerminalVirtualWidget>> get terminalVirtualWidgets {
     return [
-      ...setting,
+      [
+        TerminalVirtualWidget(
+          child: const Icon(Icons.add),
+          onTap: (context, TerminalFlutter terminalFlutter) {
+            terminalFlutter.scaleUp();
+            setState(() {});
+          },
+        ),
+        TerminalVirtualWidget(
+          child: const Icon(Icons.minimize),
+          onTap: (context, TerminalFlutter terminalFlutter) {
+            terminalFlutter.scaleDown();
+            setState(() {});
+          },
+        ),
+        TerminalVirtualWidget(
+          child: const Icon(Icons.keyboard_arrow_up),
+          onTap: (context, TerminalFlutter terminalFlutter) {
+            terminalFlutter.terminal.keyInput(TerminalKey.arrowUp);
+          },
+        ),
+      ],
+      [
+        TerminalVirtualWidget(
+          child: const Text("CTRL"),
+          onTap: (context, TerminalFlutter terminalFlutter) {
+            const Icon(Icons.arrow_upward);
+            terminalFlutter.terminal.keyInput(TerminalKey.arrowUp);
+          },
+        ),
+        TerminalVirtualWidget(
+          child: const Icon(Icons.keyboard_arrow_left),
+          onTap: (context, TerminalFlutter terminalFlutter) {
+            terminalFlutter.terminal.keyInput(TerminalKey.arrowLeft);
+          },
+        ),
+        TerminalVirtualWidget(
+          child: const Icon(Icons.keyboard_arrow_down),
+          onTap: (context, TerminalFlutter terminalFlutter) {
+            terminalFlutter.terminal.keyInput(TerminalKey.arrowDown);
+          },
+        ),
+        TerminalVirtualWidget(
+          child: const Icon(Icons.keyboard_arrow_right),
+          onTap: (context, TerminalFlutter terminalFlutter) {
+            terminalFlutter.terminal.keyInput(TerminalKey.arrowRight);
+          },
+        ),
+      ]
     ];
   }
+}
+
+class TerminalVirtualWidget {
+  Widget child;
+  void Function(BuildContext context, TerminalFlutter terminalFlutter) onTap;
+  TerminalVirtualWidget({
+    required this.child,
+    required this.onTap,
+  });
 }

@@ -4,6 +4,19 @@ import 'dart:io';
 import 'package:flutter_pty/flutter_pty.dart';
 import 'package:xterm/xterm.dart';
 
+class TerminalNativeShell {
+  static String get shell {
+    if (Platform.isMacOS || Platform.isLinux) {
+      return Platform.environment['SHELL'] ?? 'bash';
+    }
+
+    if (Platform.isWindows) {
+      return 'cmd.exe';
+    }
+    return 'sh';
+  }
+}
+
 class TerminalClient {
   late String title;
   late Terminal terminal;
