@@ -25,8 +25,6 @@ dependencies:
   archive: ^3.4.10
   general_flutter: ^0.0.13
   path: ^1.9.0
-  explorer: 
-    path: ../explorer
 
 dev_dependencies:
   flutter_test:

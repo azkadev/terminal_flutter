@@ -41,14 +41,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
-  auto_animated:
-    dependency: transitive
-    description:
-      name: auto_animated
-      sha256: f62311033d043d2709c25444551debdfd08649138c2923b0298d776792291149
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.2.0"
   awesome_notifications:
     dependency: transitive
     description:
@@ -145,13 +137,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.5"
-  explorer:
-    dependency: "direct main"
-    description:
-      path: "../explorer"
-      relative: true
-    source: path
-    version: "2.3.0"
   fake_async:
     dependency: transitive
     description:
@@ -197,14 +182,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
-  flutter_breadcrumb:
-    dependency: transitive
-    description:
-      name: flutter_breadcrumb
-      sha256: "1531680034def621878562ad763079933dabe9f9f5d5add5a094190edc33259b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
   flutter_colorpicker:
     dependency: "direct main"
     description:
@@ -797,14 +774,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
-  sliver_tools:
-    dependency: transitive
-    description:
-      name: sliver_tools
-      sha256: eae28220badfb9d0559207badcbbc9ad5331aac829a88cb0964d330d2a4636a6
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.12"
   sms_flutter:
     dependency: transitive
     description:
@@ -1013,14 +982,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
-  visibility_detector:
-    dependency: transitive
-    description:
-      name: visibility_detector
-      sha256: dd5cc11e13494f432d15939c3aa8ae76844c42b723398643ce9addb88a5ed420
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.0+2"
   vm_service:
     dependency: transitive
     description:

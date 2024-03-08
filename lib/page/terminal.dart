@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:archive/archive_io.dart';
-import 'package:explorer/explorer_io.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_pty/flutter_pty.dart';
@@ -35,7 +35,7 @@ class TerminalPageState extends State<TerminalPage> {
 
   bool is_init_client = false;
   GeneralFlutter general_library = GeneralFlutter();
-  late ExplorerController explorerController;
+  // late ExplorerController explorerController;
 
   @override
   void initState() {
@@ -52,11 +52,7 @@ class TerminalPageState extends State<TerminalPage> {
     Future(() async {
       Directory directory = await getAppDir();
       _initVirtKeys();
-      explorerController = ExplorerController(
-        provider: IoExplorerProvider(
-          entryPath: directory.path, // For IO explorer pass some entry path
-        ),
-      );
+      
       Terminal terminal = Terminal(
         maxLines: 10000,
         inputHandler: virtKeyProvider,
