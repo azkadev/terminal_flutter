@@ -1,5 +1,4 @@
 // ignore_for_file: non_constant_identifier_names
- 
 
 import 'dart:io';
 
@@ -110,8 +109,7 @@ Report issues at https://github.com/azkadev/terminal_flutter
                 getTerminalNow.terminal,
                 theme: TerminalThemes.defaultTheme,
                 controller: getTerminalNow.terminalController,
-                textScaleFactor:
-                    (textScaleFactor < 0.1) ? 0.1 : textScaleFactor,
+                textScaler: TextScaler.linear((textScaleFactor < 0.1) ? 0.1 : textScaleFactor),
                 autofocus: true,
                 backgroundOpacity: 0,
                 simulateScroll: true,
@@ -120,8 +118,7 @@ Report issues at https://github.com/azkadev/terminal_flutter
                 onSecondaryTapDown: (details, offset) async {
                   final selection = getTerminalNow.terminalController.selection;
                   if (selection != null) {
-                    final text =
-                        getTerminalNow.terminal.buffer.getText(selection);
+                    final text = getTerminalNow.terminal.buffer.getText(selection);
                     getTerminalNow.terminalController.clearSelection();
                     await Clipboard.setData(ClipboardData(text: text));
                   } else {
