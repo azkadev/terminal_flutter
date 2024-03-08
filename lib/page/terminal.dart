@@ -1,15 +1,22 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:archive/archive_io.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:general_lib/general_lib.dart';
+import 'package:general_lib_flutter/extension/global_key.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:terminal_flutter/core/core.dart';
 import 'package:terminal_flutter/core/terminal_client.dart';
 import 'package:terminal_flutter/page/setting.dart';
 import 'package:terminal_flutter/widget/widget.dart';
 import 'package:xterm/xterm.dart';
+import "package:path/path.dart" as path;
 
 class TerminalPage extends StatefulWidget {
   final Directory? app_dir;
@@ -26,28 +33,77 @@ class TerminalPage extends StatefulWidget {
 }
 
 class TerminalPageState extends State<TerminalPage> {
-  late List<TerminalClient> terminalClients = [
-    TerminalClient(
-      title: "Helo",
-      terminal: Terminal(
-        maxLines: 10000,
-      ),
-      terminalController: TerminalController(),
-      isActive: true,
-    )
-  ];
-
+  List<TerminalClient> terminalClients = [];
+  bool is_init_client = false;
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      task();
+    });
+  }
 
-    WidgetsBinding.instance.endOfFrame.then(
-      (_) {
-        if (mounted) {
-          TerminalClient terminalClient = getTerminalNow;
-          setState(() {});
+  void task() {
+    Future(() async {
+      Directory directory = await getAppDir();
+      terminalClients = [
+        TerminalClient(
+          title: "Helo",
+          terminal: Terminal(
+            maxLines: 10000,
+          ),
+          terminalController: TerminalController(),
+          workingDirectory: (dart.isAndroid) ? directory.path : null,
+          isActive: true,
+        )
+      ];
+      getTerminalNow.pty.write(utf8.encode("echo -e 'Hello,\nWorld!'\n"));
 
-          String text = """
+      setState(() {
+        is_init_client = true;
+      });
+
+      await extractBootStrap(
+        directory: directory,
+      );
+    });
+  }
+
+  Future<void> extractBootStrap({
+    required Directory directory,
+  }) async {
+    ByteData boot_strap = await rootBundle.load("assets/bootstrap/alpine-aarch64.zip");
+    Archive archive = ZipDecoder().decodeBytes(boot_strap.buffer.asUint64List());
+    Directory directory_boot_strap = Directory(path.join(directory.path, "linux"));
+    if (directory_boot_strap.existsSync() == false) {
+      extractArchiveToDisk(
+        archive,
+        directory_boot_strap.path,
+        asyncWrite: true,
+      );
+    }
+  }
+
+  Future<Directory> getAppDir() async {
+    return await getApplicationSupportDirectory();
+  }
+
+  Color pickerColor = const Color(0xff443a49);
+  Color currentColor = const Color.fromARGB(255, 41, 55, 69);
+
+// ValueChanged<Color> callback
+  void changeColor(Color color) {
+    setState(() => pickerColor = color);
+  }
+
+  GlobalKey globalKey = GlobalKey();
+  double textScaleFactor = 1;
+
+  TerminalClient get getTerminalNow {
+    return terminalClients.getTerminalActiveForce();
+  }
+
+  String text_command_first = """
 Welcome to Terminal!
 
 Docs:       https://github.com/azkadev/terminal_flutter
@@ -62,79 +118,68 @@ Working with packages:
 
 Report issues at https://github.com/azkadev/terminal_flutter
 """;
-          terminalClient.terminal.write(text.split("\n").join("\t"));
-
-          return;
-        }
-      },
-    );
-  }
-
-  String? getAppDir() {
-    return null;
-  }
-
-  Color pickerColor = const Color(0xff443a49);
-  Color currentColor = const Color.fromARGB(255, 41, 55, 69);
-
-// ValueChanged<Color> callback
-  void changeColor(Color color) {
-    setState(() => pickerColor = color);
-  }
-
-  late double textScaleFactor = 1;
-
-  TerminalClient get getTerminalNow {
-    return terminalClients.getTerminalActiveForce();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: currentColor,
-      body: ConstrainedBox(
-        constraints: const BoxConstraints(
-          minHeight: 0,
-          minWidth: 0,
+        backgroundColor: currentColor,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(420),
+          child: Header(
+            key: globalKey,
+            color: currentColor,
+            terminalClients: terminalClients,
+            items: topBar(isHideWindowControll: widget.isHideWindowControll),
+          ),
         ),
-        child: Column(
-          children: [
-            Header(
-              color: currentColor,
-              terminalClients: terminalClients,
-              items: topBar(isHideWindowControll: widget.isHideWindowControll),
-            ),
-            Expanded(
-              child: TerminalView(
-                getTerminalNow.terminal,
-                theme: TerminalThemes.defaultTheme,
-                controller: getTerminalNow.terminalController,
-                textScaler: TextScaler.linear((textScaleFactor < 0.1) ? 0.1 : textScaleFactor),
-                autofocus: true,
-                backgroundOpacity: 0,
-                simulateScroll: true,
-                padding: const EdgeInsets.all(5),
-                alwaysShowCursor: true,
-                onSecondaryTapDown: (details, offset) async {
-                  final selection = getTerminalNow.terminalController.selection;
-                  if (selection != null) {
-                    final text = getTerminalNow.terminal.buffer.getText(selection);
-                    getTerminalNow.terminalController.clearSelection();
-                    await Clipboard.setData(ClipboardData(text: text));
-                  } else {
-                    final data = await Clipboard.getData('text/plain');
-                    final text = data?.text;
-                    if (text != null) {
-                      getTerminalNow.terminal.paste(text);
-                    }
-                  }
-                },
+        body: Builder(
+          builder: (context) {
+            if (is_init_client == false) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return ConstrainedBox(
+              constraints: const BoxConstraints(
+                minHeight: 0,
+                minWidth: 0,
               ),
-            ),
-          ],
-        ),
-      ),
-    );
+              child: Column(
+                children: [
+                  SizedBox.fromSize(
+                    size: globalKey.sizeRenderBox(),
+                  ),
+                  Expanded(
+                    child: TerminalView(
+                      getTerminalNow.terminal,
+                      theme: TerminalThemes.defaultTheme,
+                      controller: getTerminalNow.terminalController,
+                      textScaler: TextScaler.linear((textScaleFactor < 0.1) ? 0.1 : textScaleFactor),
+                      autofocus: true,
+                      backgroundOpacity: 0,
+                      simulateScroll: true,
+                      padding: const EdgeInsets.all(5),
+                      alwaysShowCursor: true,
+                      onSecondaryTapDown: (details, offset) async {
+                        final selection = getTerminalNow.terminalController.selection;
+                        if (selection != null) {
+                          final text = getTerminalNow.terminal.buffer.getText(selection);
+                          getTerminalNow.terminalController.clearSelection();
+                          await Clipboard.setData(ClipboardData(text: text));
+                        } else {
+                          final data = await Clipboard.getData('text/plain');
+                          final text = data?.text;
+                          if (text != null) {
+                            getTerminalNow.terminal.paste(text);
+                          }
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ));
   }
 
   void scaleDown() {

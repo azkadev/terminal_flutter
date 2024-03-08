@@ -1,10 +1,8 @@
-  
 import 'dart:convert';
 import 'dart:io';
- 
+
 import 'package:flutter_pty/flutter_pty.dart';
 import 'package:xterm/xterm.dart';
- 
 
 class TerminalClient {
   late String title;
@@ -12,10 +10,12 @@ class TerminalClient {
   late TerminalController terminalController;
   late bool isActive;
   late Pty pty;
+  String? workingDirectory;
   TerminalClient({
     required this.title,
     required this.terminal,
     required this.terminalController,
+    this.workingDirectory,
     this.isActive = false,
   }) {
     startPty();
@@ -40,15 +40,13 @@ class TerminalClient {
   void startPty() {
     pty = Pty.start(
       shell,
+      workingDirectory: workingDirectory,
       columns: terminal.viewWidth,
       rows: terminal.viewHeight,
     );
 
     // pty.output.cast<List<int>>().transform(const Utf8Decoder()).listen(terminal.write);
-    pty.output
-        .cast<List<int>>()
-        .transform(const Utf8Decoder())
-        .listen(terminal.write);
+    pty.output.cast<List<int>>().transform(const Utf8Decoder()).listen(terminal.write);
 
     pty.exitCode.then((code) {
       isActive = false;
