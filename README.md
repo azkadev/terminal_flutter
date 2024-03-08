@@ -7,7 +7,7 @@ Terminal Flutter app dan library support all platform
 ## Features
 1. [x] Multi shell
 2. [x] Cross platform Support (Android, iOS, Linux, macOS, Windows)
-3. [ ] Custom environment like termux (jika anda tahu chroot / sejenis itu tolong kasih saya petunjuk ya)
+3. [x] Custom environment like termux (jika anda tahu chroot / sejenis itu tolong kasih saya petunjuk ya)
 4. [x] Plugable Library now you can add terminal in your app
 
 5. Install Package
