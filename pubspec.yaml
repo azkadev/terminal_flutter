@@ -23,6 +23,8 @@ dependencies:
     git:
      url:  https://github.com/fusion44/flutter_pty.git
   archive: ^3.4.10
+  general_flutter: ^0.0.10
+  path: ^1.9.0
 
 dev_dependencies:
   flutter_test:
