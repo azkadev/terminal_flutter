@@ -118,7 +118,13 @@ class TerminalPageState extends State<TerminalPage> {
   }) async {
     ByteData boot_strap = await rootBundle.load("assets/bootstrap/${linuxDistroType.name}-aarch64.zip");
     Archive archive = ZipDecoder().decodeBytes(boot_strap.buffer.asUint8List());
-    Directory directory_home = Directory(path.join(directory.path, "home"));
+    Directory directory_home = Directory(
+      path.join(
+        directory.path,
+        "home",
+      ),
+    );
+
     if (directory_home.existsSync() == false) {
       await directory_home.create(
         recursive: true,
@@ -168,16 +174,7 @@ class TerminalPageState extends State<TerminalPage> {
           args: [],
         );
       }
-
-      // terminalFlutter.addCommand(
-      //   executable: "mount",
-      //   args: [
-      //     //  --bind /path/asal /bootstrap/target_directory
-      //     "--bind",
-      //     directory_home.path,
-      //     directory_bootstrap_linux.path,
-      //   ],
-      // );
+ 
       terminalFlutter.addCommand(
         executable: "./run-bootstrap.sh",
         args: [
@@ -186,19 +183,7 @@ class TerminalPageState extends State<TerminalPage> {
         ],
       );
 
-      // terminalFlutter.addCommand(
-      //   executable: "apk",
-      //   args: [
-      //     "update",
-      //   ],
-      // );
 
-      // terminalFlutter.addCommand(
-      //   executable: "apk",
-      //   args: [
-      //     "upgrade",
-      //   ],
-      // );
     }
   }
 
