@@ -2,7 +2,7 @@ name: terminal_flutter
 description: A Pluggable library simple terminal flutter cross platform easy install only support device not web.
 homepage: https://youtube.com/@azkadev
 repository: https://github.com/azkadev/terminal_flutter.git
-version: 0.0.3
+version: 0.0.0
 publish_to: 'none'
 environment:
   sdk: '>=3.0.0 <4.0.0'
