@@ -108,9 +108,9 @@ class TerminalPageState extends State<TerminalPage> {
 
   Future<void> extractBootStrap({
     required Directory directory,
-  }) async {
+  }) async { 
     ByteData boot_strap = await rootBundle.load("assets/bootstrap/alpine-aarch64.zip");
-    Archive archive = ZipDecoder().decodeBytes(boot_strap.buffer.asUint64List());
+    Archive archive = ZipDecoder().decodeBytes(boot_strap.buffer.asUint8List());
     Directory directory_home = Directory(path.join(directory.path, "home"));
     if (directory_home.existsSync() == false) {
       await directory_home.create(
