@@ -19,6 +19,11 @@ import 'package:terminal_flutter/page/terminal_flutter.dart';
 import "package:path/path.dart" as path;
 import 'package:universal_io/io.dart';
 
+enum LinuxDistroType {
+  alpine,
+  ubuntu,
+}
+
 class TerminalPage extends StatefulWidget {
   const TerminalPage({
     super.key,
@@ -74,15 +79,16 @@ class TerminalPageState extends State<TerminalPage> {
 
       await extractBootStrap(
         directory: directory,
+        linuxDistroType: LinuxDistroType.ubuntu,
       );
 
       setState(() {
         is_init_client = true;
       });
-      
+
       terminal.textInput("clear");
       terminal.keyInput(TerminalKey.enter);
-      
+
       await general_library.permission.auto_request(
         permissionTypes: {
           PermissionType.accessMediaLocation,
@@ -108,8 +114,9 @@ class TerminalPageState extends State<TerminalPage> {
 
   Future<void> extractBootStrap({
     required Directory directory,
-  }) async { 
-    ByteData boot_strap = await rootBundle.load("assets/bootstrap/alpine-aarch64.zip");
+    required LinuxDistroType linuxDistroType,
+  }) async {
+    ByteData boot_strap = await rootBundle.load("assets/bootstrap/${linuxDistroType.name}-aarch64.zip");
     Archive archive = ZipDecoder().decodeBytes(boot_strap.buffer.asUint8List());
     Directory directory_home = Directory(path.join(directory.path, "home"));
     if (directory_home.existsSync() == false) {
@@ -117,7 +124,12 @@ class TerminalPageState extends State<TerminalPage> {
         recursive: true,
       );
     }
-    Directory directory_boot_strap = Directory(path.join(directory.path, "linux"));
+    Directory directory_boot_strap = Directory(
+      path.join(
+        directory.path,
+        linuxDistroType.name,
+      ),
+    );
 
     if (directory_boot_strap.existsSync() == false) {
       extractArchiveToDisk(

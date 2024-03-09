@@ -37,3 +37,4 @@ flutter:
   assets:
     - assets/icon/ 
     - assets/bootstrap/alpine-aarch64.zip
+    - assets/bootstrap/ubuntu-aarch64.zip
