@@ -79,7 +79,7 @@ class TerminalPageState extends State<TerminalPage> {
 
       await extractBootStrap(
         directory: directory,
-        linuxDistroType: LinuxDistroType.ubuntu,
+        linuxDistroType: LinuxDistroType.alpine,
       );
 
       setState(() {
