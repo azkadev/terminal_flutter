@@ -1,7 +1,9 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'dart:convert';
+import 'dart:typed_data';
 
+import 'package:general_lib/general_lib.dart';
 import 'package:terminal_flutter/package/package.dart';
 
 class TerminalFlutter {
@@ -22,24 +24,16 @@ class TerminalFlutter {
     terminal = terminalLib;
     terminalController = terminalControllerLib;
     pty = ptyLib;
-
-    pty.output
-        .cast<List<int>>()
-        .transform(
-          const Utf8Decoder(),
-        )
-        .listen(
-          terminal.write,
-        );
+    pty.output.listen((event) {
+      updateData(event);
+    });
 
     pty.exitCode.then((code) {
       isterminal_active = false;
-      terminal.write('the process exited with exit code $code');
+      terminal.write('the process exited with exit code ${code}');
     });
 
-    terminal.onOutput = (String data) {
-      pty.write(const Utf8Encoder().convert(data));
-    };
+    terminal.onOutput = onOutput;
 
     terminal.onTitleChange = (String data) {
       title = data;
@@ -50,12 +44,41 @@ class TerminalFlutter {
     };
   }
 
+  void updateData(Uint8List event) {
+    if (event.isNotEmpty) {
+      try {
+        terminal.write(utf8.decode(event, allowMalformed: true));
+      } catch (e) {}
+    }
+  }
+
+  void onOutput(String data) {
+    if (data.isNotEmpty) {
+      try {
+        pty.write(utf8.encode(data));
+      } catch (e) {}
+    }
+  }
+
   void addCommand({
     required String executable,
     required List<String> args,
+    required bool isAddSh,
   }) {
+    List<String> exes = [
+      executable,
+      ...args,
+      "\n",
+    ];
+
+    if (isAddSh ) {
+      if (dart.isAndroid) {
+        exes.add("sh");
+      }
+    }
+
     pty.write(utf8.encode(
-      [executable, ...args, "\n"].join(" "),
+      exes.join(" "),
     ));
   }
 
