@@ -13,8 +13,7 @@ Terminal Flutter Untuk menambahkan fitur terminal pada flutter app
 ## Linux Distro on Android / Proot / 
 
 1. [Alpine Linux](https://github.com/feelfreelinux/android-linux-bootstrap) **TESTED WORK 100%** **Butuh Akses Root**
-2. Ubuntu Linux
-3. Debian Linux
+2. [Ubuntu Linux](https://cdimage.ubuntu.com/ubuntu-base/releases/jammy/release/) **TESTED WORK 100%** **Butuh Akses Root**
 
 ## Install Package
 
