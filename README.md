@@ -32,6 +32,8 @@ New update 2024
 
 ![](screenshots/new_2.png)
 
+![](screenshots/new_3.jpg)
+
 Old
 ![](screenshots/desktop.png)
 ![](screenshots/desktop_2.png)
