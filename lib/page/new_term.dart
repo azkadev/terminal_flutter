@@ -2,7 +2,6 @@
 
 import 'dart:async';
 
-import 'package:archive/archive_io.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,7 +16,6 @@ import 'package:terminal_flutter/package/package.dart';
 import 'package:terminal_flutter/page/core.dart';
 import 'package:terminal_flutter/page/terminal_flutter.dart';
 
-import "package:path/path.dart" as path;
 import 'package:universal_io/io.dart';
 
 enum LinuxDistroType {

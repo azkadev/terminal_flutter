@@ -3,6 +3,7 @@
 import 'dart:async';
 
 import 'package:archive/archive_io.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,7 +16,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:terminal_flutter/core/terminal_client.dart';
 import 'package:terminal_flutter/package/package.dart';
 import 'package:terminal_flutter/page/core.dart';
-import 'package:terminal_flutter/page/new_term.dart';
+import 'package:terminal_flutter/page/dialog.dart';
 import 'package:terminal_flutter/page/terminal_flutter.dart';
 
 import "package:path/path.dart" as path;
@@ -175,7 +176,6 @@ class TerminalPageState extends State<TerminalPage> {
     if (dart.isAndroid) {
       ProcessResult processResult = Process.runSync("whoami", []);
       String user = processResult.stdout.toString().trim();
-      print(user);
       terminalFlutter.addCommand(
         executable: "su",
         isAddSh: false,
@@ -438,6 +438,7 @@ Report issues at https://github.com/azkadev/terminal_flutter
   }
 
   GlobalKey globalKey_Bottom = GlobalKey();
+  
   Widget terminalBottom() {
     Size size = updateVirtualKey();
     return Container(
@@ -479,7 +480,7 @@ Report issues at https://github.com/azkadev/terminal_flutter
   }
 
   Size updateVirtualKey() {
-    if (dart.isAndroid) {
+    if (dart.isAndroid || kDebugMode) {
       return Size(context.mediaQueryData.size.width / 7, context.mediaQueryData.size.height * 0.043 * terminalVirtualWidgets.length);
       // _virtKeyWidth = context.mediaQueryData.size.width / 7;
       // _virtKeysHeight = context.mediaQueryData.size.height * 0.043 * terminalVirtualWidgets.length;
@@ -562,18 +563,27 @@ Report issues at https://github.com/azkadev/terminal_flutter
         TerminalVirtualWidget(
           child: const Text("Init"),
           onTap: (context, TerminalFlutter terminalFlutter) {
-            List<String> commands = """
-DEBIAN_FRONTEND=noninteractive apt-get update -y
-DEBIAN_FRONTEND=noninteractive apt-get install -y apt-utils curl iperf dialog locales software-properties-common ca-certificates curl gnupg lsb-release
-"""
-                .trim()
-                .split("\n");
+            showDialog(
+              context: context,
+              builder: (context) {
+                return DialogList(
+                  terminalFlutter: terminalFlutter,
+                );
+              },
+            );
+            return;
 
-            for (var i = 0; i < commands.length; i++) {
-              setState(() {
-                terminalFlutter.terminal.textInput("${commands[i].trim()}\n");
-              });
-            }
+            // List<String> commands = [
+            //   "DEBIAN_FRONTEND=noninteractive apt-get update -y",
+            //   "DEBIAN_FRONTEND=noninteractive apt-get install -y apt-utils curl iperf dialog locales software-properties-common ca-certificates curl gnupg lsb-release",
+            // ];
+
+            // for (var i = 0; i < commands.length; i++) {
+            //   setState(() {
+            //     terminalFlutter.terminal.textInput("${commands[i].trim()}\n");
+            //   });
+            // }
+
           },
         ),
         TerminalVirtualWidget(
