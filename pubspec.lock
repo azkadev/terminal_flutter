@@ -321,6 +321,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.2"
+  github:
+    dependency: transitive
+    description:
+      name: github
+      sha256: "57f6ad78591f9638e903409977443093f862d25062a6b582a3c89e4ae44e4814"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.24.0"
   http:
     dependency: transitive
     description:
@@ -537,6 +545,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
+  packagex:
+    dependency: "direct main"
+    description:
+      name: packagex
+      sha256: "96f1b7773eb2199f5ab47abbc67d706e8636d8e17551e9dc19630c650c9078de"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.44"
   path:
     dependency: "direct main"
     description:
@@ -1054,6 +1070,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.0"
+  yaml:
+    dependency: transitive
+    description:
+      name: yaml
+      sha256: "75769501ea3489fca56601ff33454fe45507ea3bfb014161abc3b43ae25989d5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.2"
   zmodem:
     dependency: transitive
     description:

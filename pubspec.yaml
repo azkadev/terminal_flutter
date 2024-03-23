@@ -26,6 +26,7 @@ dependencies:
   general_flutter: ^0.0.13
   path: ^1.9.0
   universal_io: ^2.2.2
+  packagex: ^0.0.44
 
 dev_dependencies:
   flutter_test:

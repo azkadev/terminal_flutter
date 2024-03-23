@@ -84,10 +84,12 @@ class TerminalPageState extends State<TerminalPage> {
           environment: () {
             if (dart.isAndroid) {
               ProcessResult processResult = Process.runSync("id", ["-u"]);
-              String user = processResult.stdout.toString().trim(); 
+              String user = processResult.stdout.toString().trim();
               return {
                 "EXTRA_USER_ID": "${user}",
                 "EXTRA_BIND": "-b /system -b ${directory_home.path}:/home",
+                "LC_ALL": "C",
+                "LANGUAGE": "en_US.UTF-8",
               };
             }
             return null;
@@ -541,6 +543,12 @@ Report issues at https://github.com/azkadev/terminal_flutter
             terminalFlutter.terminal.keyInput(TerminalKey.arrowUp);
           },
         ),
+        TerminalVirtualWidget(
+          child: const Icon(Icons.keyboard_arrow_up),
+          onTap: (context, TerminalFlutter terminalFlutter) {
+            terminalFlutter.terminal.keyInput(TerminalKey.arrowUp);
+          },
+        ),
       ],
       [
         TerminalVirtualWidget(
@@ -552,13 +560,20 @@ Report issues at https://github.com/azkadev/terminal_flutter
           },
         ),
         TerminalVirtualWidget(
-          child: const Text("New"),
+          child: const Text("Init"),
           onTap: (context, TerminalFlutter terminalFlutter) {
-            context.navigator().push(MaterialPageRoute(
-              builder: (context) {
-                return const NewTerminalPage();
-              },
-            ));
+            List<String> commands = """
+DEBIAN_FRONTEND=noninteractive apt-get update -y
+DEBIAN_FRONTEND=noninteractive apt-get install -y apt-utils curl iperf dialog locales software-properties-common ca-certificates curl gnupg lsb-release
+"""
+                .trim()
+                .split("\n");
+
+            for (var i = 0; i < commands.length; i++) {
+              setState(() {
+                terminalFlutter.terminal.textInput("${commands[i].trim()}\n");
+              });
+            }
           },
         ),
         TerminalVirtualWidget(
